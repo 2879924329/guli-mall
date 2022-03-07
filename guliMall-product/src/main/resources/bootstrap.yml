@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: gulimall-product
+  cloud:
+    nacos:
+      config:
+        #server-addr: 192.168.84.88:8848
+        server-addr: 101.200.200.220:8848
+        namespace: d0d09394-5f4f-476f-b451-2475bfd4a3b9
+#ribbon的超时时间
+ribbon:
+  ReadTimeout: 30000
+  ConnectTimeout: 30000

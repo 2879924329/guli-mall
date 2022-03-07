@@ -1,0 +1,36 @@
+server:
+  port: 11000
+
+# mysql
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    #MySQL配置
+    driverClassName: com.mysql.cj.jdbc.Driver
+    #url: jdbc:mysql://192.168.84.88:3306/gulimall_wms?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://101.200.200.220:3306/gulimall_wms?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+  application:
+    name: gulimall-warehouse
+  #    nacos注册中心地址配置
+  cloud:
+    nacos:
+      discovery:
+        #server-addr: 192.168.84.88:8848
+        server-addr: 101.200.200.220:8848
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+
+mybatis-plus:
+  mapperLocations: classpath:mapper/**/*.xml
+  global-config:
+    db-config:
+      #   分配ID(主键类型为Number(Long和Integer)或String)(since 3.3.0),
+      #  使用接口IdentifierGenerator的方法nextId
+      #  (默认实现类为DefaultIdentifierGenerator雪花算法)
+      id-type: auto
+
+logging:
+  level:
+    com.wch.gulimall.warehouse: debug

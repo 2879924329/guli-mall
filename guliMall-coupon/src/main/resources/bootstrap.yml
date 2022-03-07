@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: gulimall-coupon
+
+  cloud:
+    nacos:
+      config:
+        #server-addr: 192.168.84.88:8848
+        server-addr: 101.200.200.220:8848
+#ribbon的超时时间
+ribbon:
+  ReadTimeout: 30000
+  ConnectTimeout: 30000

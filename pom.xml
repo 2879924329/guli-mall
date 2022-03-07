@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.wch</groupId>
+    <artifactId>guliMall</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>guliMall</name>
+    <description>guliMall</description>
+    <packaging>pom</packaging>
+    <modules>
+        <module>guliMall-coupon</module>
+        <module>guliMall-member</module>
+        <module>guliMall-order</module>
+        <module>guliMall-product</module>
+        <module>guliMall-gateway</module>
+        <module>renren-fast</module>
+        <module>renren-generator</module>
+        <module>guliMall-common</module>
+        <module>gulimall-warehouse</module>
+    </modules>
+
+
+</project>
