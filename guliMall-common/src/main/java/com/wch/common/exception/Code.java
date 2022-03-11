@@ -14,7 +14,8 @@ public enum Code {
     WARE_PURCHASE_MERGE_FAILED(11001, "无法将采购项合并到已被领取的采购单"),
 
     WARE_PURCHASE_ASSIGN_FAILED(11002, "只能给新建的采购单分配采购员"),
-    WARE_SKU_STOCK_NOT_ENOUGH(11003, "商品库存不足");
+    WARE_SKU_STOCK_NOT_ENOUGH(11003, "商品库存不足"),
+    PRODUCT_UP_EXCEPTION(11000, "商品上架出现异常");
     private int code;
     private String message;
     Code(int code, String message) {

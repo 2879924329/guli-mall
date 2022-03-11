@@ -5,3 +5,5 @@ spring:
     nacos:
       discovery:
         server-addr: 101.200.200.220:8848
+server:
+  port: 12000

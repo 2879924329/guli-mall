@@ -3,3 +3,6 @@ spring:
     nacos:
       config:
         server-addr: 101.200.200.220:8848
+ribbon:
+  ReadTimeout: 30000
+  ConnectTimeout: 30000

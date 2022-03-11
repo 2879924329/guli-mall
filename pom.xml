@@ -18,6 +18,8 @@
         <module>renren-generator</module>
         <module>guliMall-common</module>
         <module>gulimall-warehouse</module>
+        <module>gulimall-search</module>
+        <module>guliMall-third-party</module>
     </modules>
 
 

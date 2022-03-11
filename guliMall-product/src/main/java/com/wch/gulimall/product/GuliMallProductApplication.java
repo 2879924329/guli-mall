@@ -22,7 +22,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @MapperScan(basePackages = "com.wch.gulimall.product.dao")
 @SpringBootApplication
 @EnableDiscoveryClient
-
 public class GuliMallProductApplication {
     public static void main(String[] args) {
         SpringApplication.run(GuliMallProductApplication.class, args);

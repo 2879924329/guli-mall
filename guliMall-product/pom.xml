@@ -8,7 +8,7 @@
         <version>2.3.4.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.vivi</groupId>
+    <groupId>com.wch</groupId>
     <artifactId>guliMall-product</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>guliMall-product</name>
