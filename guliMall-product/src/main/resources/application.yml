@@ -13,6 +13,25 @@ spring:
 
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
+  thymeleaf:
+    cache: true
+  redis:
+    port: 6379
+    host: localhost
+   #springcache
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000
+      #使用自定义key前缀
+      key-prefix: CACHE_
+      #是否启用前缀
+      use-key-prefix: true
+      #是否缓存空值
+      cache-null-values: true
+
+
+
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
@@ -28,4 +47,4 @@ server:
 
 logging:
   level:
-    com.wch.gulimall: debug
+    com.wch.gulimall: error

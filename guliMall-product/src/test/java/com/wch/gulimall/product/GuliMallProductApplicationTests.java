@@ -6,8 +6,13 @@ import com.wch.gulimall.product.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
@@ -24,6 +29,12 @@ class GuliMallProductApplicationTests {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    private RedissonClient redissonClient;
     @Test
     void categoryTest(){
         Long[] cateLogPath = categoryService.findCateLogPath(396L);
@@ -36,5 +47,20 @@ class GuliMallProductApplicationTests {
         brandService.save(brandEntity);
         System.out.println("保存成功");
     }
+
+    @Test
+    void redisTest(){
+        ValueOperations<String, String> stringStringValueOperations = stringRedisTemplate.opsForValue();
+        stringStringValueOperations.set("hello", "hello");
+        String hello = stringStringValueOperations.get("hello");
+        System.out.println(hello);
+
+    }
+
+    @Test
+    void redissonTest(){
+        System.out.println(redissonClient);
+    }
+
 
 }
