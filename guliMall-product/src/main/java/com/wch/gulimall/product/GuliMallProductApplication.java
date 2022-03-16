@@ -54,6 +54,19 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  *     初始化所有的缓存 -> 每个缓存都决定使用什么配置 -> 如果redisCacheConfiguration有就用自己的，没有
  *     就使用默认配置，只需要在容器中放一个RedisCacheConfiguration即可。 -> 就会应用到当前RedisCacheManager
  *     管理的所有缓存分区中
+ * 5， springCache的不足：
+ *      1）读模式，
+ *          缓存穿透，查询一个null数据，                   解决：缓存一个空数据：   cache-null-values: true
+ *          缓存击穿，大量并发进来查询一个一个正好过期的数据，  解决：加锁（默认底层没有加锁）,@Cacheable 中使用Cacheable解决缓存击穿问题，家的锁也不是分布式锁，是本地锁
+ *          缓存雪崩，大量的key同时过期                     解决：加随机时间 加过期时间
+ *       2）写模式 （缓存一致性）
+ *          读写加锁
+ *          引入中间件Canal，感知mysql的更新去更新数据库
+ *          读多写少 直接去数据库查询就好
+ *      总结：常规的数据（读多写少，即时性，一致性要求不高的）的缓存 完全可以使用SpringCache，写模式下，只要缓存的数据有过期时间就足够了
+ *            特殊数据特殊设置
+ *
+ *
  */
 //@EnableCaching（移步到配置类）
 @EnableFeignClients(basePackages = "com.wch.gulimall.product.feign")

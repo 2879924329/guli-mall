@@ -8,7 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
@@ -97,8 +100,21 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     /**
      * 级联更新所有关联的数据
      *
+     *   @CacheEvict : 缓存失效模式的使用
+     *修改目录的时候删除缓存, 指定要删除的缓存区
+     *
+     * @Caching ： 同时进行多种缓存操作
+     *
+     *  @CacheEvict(value = "category", allEntries = true) 删除某个分区的所有内容
+     * @CachePut : 双写模式
+     *  存储一个业务类型的数据，都可以指定成同一个分区，不在配置文件指定key-prefix，默认分区名就是缓存的名字
      * @param category
      */
+
+
+//    @CacheEvict(value = "category", allEntries = true)
+    @Caching(evict = {@CacheEvict(value = "category", key = "'getLevelFirstCategorys'"),
+            @CacheEvict(value = "category", key = "'getCatelogJson'")   } )
     @Transactional
     @Override
     public void updateCascade(CategoryEntity category) {
@@ -162,7 +178,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      *    将数据保存为json格式
      * @return
      */
-    @Cacheable(value = "category", key = ("#root.methodName"))
+    @Cacheable(value = "category", key = ("#root.methodName"),sync = true)
     @Override
     public List<CategoryEntity> getLevelFirstCategorys() {
         System.out.println("方法调用");
@@ -174,12 +190,46 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
 
     /**
+     * 使用注解加入缓存
+     * @return
+     */
+    @Cacheable(value = "category", key = ("#root.methodName"))
+    @Override
+    public Map<String, List<Catelog2Vo>> getCatelogJson() {
+        List<CategoryEntity> categoryEntityList = baseMapper.selectList(null);
+        //查询所有一级分类
+        List<CategoryEntity> levelFirstCategorys = getParentCid(categoryEntityList, 0L);
+        //封装数据
+        return levelFirstCategorys.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
+            //每一个的一级分类，查到这个一级分类的二级分类
+            List<CategoryEntity> categoryEntities = getParentCid(categoryEntityList, v.getCatId());
+            List<Catelog2Vo> catelog2Vos = null;
+            if (!CollectionUtils.isEmpty(categoryEntities)) {
+                catelog2Vos = categoryEntities.stream().map(l2 -> {
+                    Catelog2Vo catelog2Vo = new Catelog2Vo(v.getCatId().toString(), null, l2.getCatId().toString(), l2.getName());
+                    //找到当前二级分类的三级分类
+                    List<CategoryEntity> level3List = getParentCid(categoryEntityList, l2.getCatId());
+                    if (!CollectionUtils.isEmpty(level3List)) {
+                        List<Catelog2Vo.Catelog3Vo> collect = level3List.stream().map(l3 -> {
+                            //封装成指定格式
+                            return new Catelog2Vo.Catelog3Vo(l2.getCatId().toString(), l3.getCatId().toString(), l3.getName());
+                        }).collect(Collectors.toList());
+                        catelog2Vo.setCatalog3List(collect);
+                    }
+                    return catelog2Vo;
+                }).collect(Collectors.toList());
+            }
+            return catelog2Vos;
+        }));
+    }
+
+    /**
      * 查询三级目录，整合redis缓存
      *
      * @return
      */
-    @Override
-    public Map<String, List<Catelog2Vo>> getCatelogJson() {
+    //@Override
+    public Map<String, List<Catelog2Vo>> getCatelogJson2() {
         // TODO 产生堆外内存溢出
         // springboot2.0以后默认使用lettuce作为操作redis的客户端，它使用netty进行网络通信
         //lettuce的bug导致堆外内存溢出,设置的jvm参数-Xmx300m,netty如果没有指定堆外内存，默认-Xmx300m
