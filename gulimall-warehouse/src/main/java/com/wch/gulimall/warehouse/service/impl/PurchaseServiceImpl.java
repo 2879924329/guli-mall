@@ -190,8 +190,6 @@ public class PurchaseServiceImpl extends ServiceImpl<PurchaseDao, PurchaseEntity
         purchaseEntity.setId(id);
         purchaseEntity.setStatus(flag?WareConstant.PurchaseStatusEnum.FINISHED.getCode() : WareConstant.PurchaseStatusEnum.HASERROR.getCode());
         this.updateById(purchaseEntity);
-
-
     }
 
 }

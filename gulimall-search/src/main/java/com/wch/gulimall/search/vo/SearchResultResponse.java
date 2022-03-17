@@ -11,7 +11,7 @@ import java.util.List;
  * @date 2022/3/15 21:50
  */
 @Data
-public class SearchResponse {
+public class SearchResultResponse {
     /**
      * es中查询到的商品信息
      */

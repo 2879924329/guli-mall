@@ -2,7 +2,7 @@ package com.wch.gulimall.search.controller;
 
 import com.wch.gulimall.search.service.MallSearchService;
 import com.wch.gulimall.search.vo.SearchParamVo;
-import com.wch.gulimall.search.vo.SearchResponse;
+import com.wch.gulimall.search.vo.SearchResultResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +21,7 @@ public class SearchController {
 
     @GetMapping("/list.html")
     public String listSearch(SearchParamVo searchParamVo, Model model) {
-        SearchResponse result = mallSearchService.search(searchParamVo);
+        SearchResultResponse result = mallSearchService.search(searchParamVo);
         model.addAttribute("result", result);
         return "list";
     }

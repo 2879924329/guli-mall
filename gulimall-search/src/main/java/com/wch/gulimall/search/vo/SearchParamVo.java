@@ -37,7 +37,7 @@ public class SearchParamVo {
      * 是否有货
      * hasStock = 0 / 1
      */
-    private Integer hasStock;
+    private Integer hasStock = 1;
 
     /**
      * 价格区间
@@ -60,7 +60,7 @@ public class SearchParamVo {
     /**
      * 页码
      */
-    private Integer pageNumber;
+    private Integer pageNumber = 1;
 
 
 }

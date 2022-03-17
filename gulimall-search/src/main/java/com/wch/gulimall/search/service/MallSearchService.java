@@ -1,7 +1,7 @@
 package com.wch.gulimall.search.service;
 
 import com.wch.gulimall.search.vo.SearchParamVo;
-import com.wch.gulimall.search.vo.SearchResponse;
+import com.wch.gulimall.search.vo.SearchResultResponse;
 
 /**
  * @author wch
@@ -9,5 +9,5 @@ import com.wch.gulimall.search.vo.SearchResponse;
  * @date 2022/3/15 21:15
  */
 public interface MallSearchService {
-    SearchResponse search(SearchParamVo searchParamVo);
+    SearchResultResponse search(SearchParamVo searchParamVo);
 }
