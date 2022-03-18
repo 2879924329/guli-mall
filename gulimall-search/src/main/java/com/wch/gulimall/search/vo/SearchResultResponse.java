@@ -17,39 +17,47 @@ public class SearchResultResponse {
      */
     private List<SkuEsModel> products;
     /**
-     * 页码
+     * 总共几页
      */
-    private Integer pageNum;
+    private Long totalPage;
+
     /**
-     * 只记录
+     * 当前页码
      */
-    private Long total;
+    private Integer currPage;
+
     /**
-     * 总页码
+     * 每页显示几个
      */
-    private Integer totalPages;
+    private Integer pageSize;
+
+    /**
+     * 总记录数
+     */
+    private Long totalCount;
+
 
     private List<BrandVo> brandVos;
 
-    private List<catalogVo> catalogVos;
+    private List<CatalogVo> catalogVos;
 
     private List<AttrVo> attrVos;
 
     @Data
-    private static class BrandVo{
-        private Integer brandId;
+    public static class BrandVo{
+        private long brandId;
         private String brandName;
         private String brandImg;
     }
 
     @Data
-    private static class AttrVo{
+    public static class AttrVo{
         private Long attrId;
         private String attrName;
         private List<String> attrValues;
     }
     @Data
-    private static class catalogVo{
+    public static class CatalogVo{
         private Long catalogId;
         private String catalogName;
     }

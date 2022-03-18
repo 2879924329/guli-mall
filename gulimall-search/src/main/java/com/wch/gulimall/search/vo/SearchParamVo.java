@@ -16,51 +16,65 @@ import java.util.List;
 public class SearchParamVo {
 
     /**
-     * 页面传递过来的全文匹配关键字
+     * &keyword=小米
+     * 关键字
      */
     private String keyword;
 
     /**
      * 三级分类id
+     * &catelog3Id=225
      */
-    private Long catalog3Id;
+    private Long catelog3Id;
 
     /**
      * 排序条件
-     * sort = saleCount_asc/desc
-     * sort = skuPrice_asc/desc
-     * sort = hotScore_asc/desc
+     *
+     * &sort=hotScore_asc/desc
      */
     private String sort;
 
     /**
-     * 是否有货
-     * hasStock = 0 / 1
-     */
-    private Integer hasStock = 1;
-
-    /**
      * 价格区间
-     * skuPrice = 1_500/500_1000/1000
-     *
+     * &price=1_500
+     * &price=_500
+     * &price=500_
      */
     private String skuPrice;
+
     /**
-     * 品牌id
-     * brandId = 1
-     * attr = 2.5寸
+     * 有货无货
+     * &hasStock=0/1
      */
-    private List<Integer> brandId;
+    private Integer hasStock;
+
     /**
-     * 商品属性
-     *  attr = 2.5寸。。。
+     * 哪些品牌
+     * &brandId=1&brandId=2&brandId=3  ==> brandId=[1,2,3]
+     *
+     */
+    private List<Long> brandId;
+
+
+    /**
+     * 按照属性规格检索
+     * &attrs=1_陶瓷:铝合金&attrs=2_anzhuo:apple
+     *
+     * 属性id_属性值，如果是多个值，用 : 连接
      */
     private List<String> attrs;
 
-    /**
-     * 页码
-     */
-    private Integer pageNumber = 1;
 
+    /**
+     * 还要支持分页
+     */
+    private Integer pageNum;
+
+
+    /**
+     * 请求参数部分
+     *
+     */
+    private String queryString;
 
 }
