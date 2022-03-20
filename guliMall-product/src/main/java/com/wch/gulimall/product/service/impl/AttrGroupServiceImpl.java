@@ -3,6 +3,7 @@ package com.wch.gulimall.product.service.impl;
 import com.wch.gulimall.product.entity.AttrEntity;
 import com.wch.gulimall.product.service.AttrService;
 import com.wch.gulimall.product.vo.AttrGroupWithAttrsVo;
+import com.wch.gulimall.product.vo.web.SkuItemVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -80,6 +81,17 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
             attrGroupWithAttrsVo.setAttrs(relationAttrInfo);
             return attrGroupWithAttrsVo;
         }).collect(Collectors.toList());
+    }
+
+    /**
+     * 查出当前spu对应的所有属性的分组信息以及当前分组下的所有属性对应的值
+     * @param spuId
+     * @param catelogId
+     * @return
+     */
+    @Override
+    public List<SkuItemVo.SpuItemBaseAttrVo> getAttrGroupWithAttrsBySpuId(Long spuId, Long catelogId) {
+       return baseMapper.getAttrGroupWithAttrsBySpuId(spuId, catelogId);
     }
 
 }

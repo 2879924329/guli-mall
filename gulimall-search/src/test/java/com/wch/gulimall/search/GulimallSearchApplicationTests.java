@@ -37,11 +37,16 @@ class GulimallSearchApplicationTests {
 
     @Autowired
     private RestHighLevelClient restHighLevelClient;
+
+
+
     @Test
     void contextLoads() {
         System.out.println(restHighLevelClient);
 
     }
+
+
 
     @Test
     void searchData() throws IOException {

@@ -30,7 +30,7 @@ spring:
         - id: gulimall_host
           uri: lb://gulimall-product
           predicates:
-              - Host=guli-mall.com
+              - Host=guli-mall.com,item.guli-mall.com
         - id: gulimall_search
           uri: lb://gulimall-search
           predicates:

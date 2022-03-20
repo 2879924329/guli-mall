@@ -7,6 +7,8 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
+import java.util.concurrent.ThreadPoolExecutor;
+
 /**
  * @author WCH
  * <p>
@@ -74,6 +76,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication
 @EnableDiscoveryClient
 public class GuliMallProductApplication {
+
     public static void main(String[] args) {
         SpringApplication.run(GuliMallProductApplication.class, args);
     }
@@ -84,3 +87,8 @@ public class GuliMallProductApplication {
  * 2）配置逻辑删除的组件            （省略）
  * 3）给实体类每某个字段加上逻辑删除的注解
  */
+
+
+
+
+

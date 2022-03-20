@@ -1,8 +1,10 @@
 package com.wch.gulimall.product;
 
+import com.wch.gulimall.product.dao.AttrGroupDao;
 import com.wch.gulimall.product.entity.BrandEntity;
 import com.wch.gulimall.product.service.BrandService;
 import com.wch.gulimall.product.service.CategoryService;
+import com.wch.gulimall.product.vo.web.SkuItemVo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +18,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
+import java.util.List;
 
 
 @RunWith(SpringRunner.class)
@@ -35,6 +38,15 @@ class GuliMallProductApplicationTests {
 
     @Autowired
     private RedissonClient redissonClient;
+
+    @Autowired
+    AttrGroupDao attrGroupDao;
+
+    @Test
+    void AttrGroupDaoTest(){
+        List<SkuItemVo.SpuItemBaseAttrVo> attrGroupWithAttrsBySpuId = attrGroupDao.getAttrGroupWithAttrsBySpuId(13L, 225L);
+        System.out.println(attrGroupWithAttrsBySpuId);
+    }
     @Test
     void categoryTest(){
         Long[] cateLogPath = categoryService.findCateLogPath(396L);

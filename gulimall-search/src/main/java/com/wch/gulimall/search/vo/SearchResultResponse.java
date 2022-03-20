@@ -3,6 +3,7 @@ package com.wch.gulimall.search.vo;
 import com.wch.common.to.SkuEsModel;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,6 +37,7 @@ public class SearchResultResponse {
      */
     private Long totalCount;
 
+    private List<Integer> pageNavs;
 
     private List<BrandVo> brandVos;
 
@@ -43,6 +45,19 @@ public class SearchResultResponse {
 
     private List<AttrVo> attrVos;
 
+    /**
+     * 面包屑导航数据
+     */
+    private List<NavVo> navs = new ArrayList<>();
+
+    private List<Long> attrIds = new ArrayList<>();
+
+    @Data
+    public static class NavVo{
+        private String navName;
+        private String navValue;
+        private String link;
+    }
     @Data
     public static class BrandVo{
         private long brandId;

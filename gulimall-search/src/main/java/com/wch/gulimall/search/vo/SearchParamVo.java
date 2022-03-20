@@ -72,7 +72,7 @@ public class SearchParamVo {
 
 
     /**
-     * 请求参数部分
+     * 请求参数部分,原生的所有查询条件
      *
      */
     private String queryString;
