@@ -9,15 +9,15 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.wch</groupId>
-    <artifactId>guliMall-third-party</artifactId>
+    <artifactId>gulimall-auth-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>guliMall-third-party</name>
-    <description>第三方微服务</description>
+    <name>gulimall-auth-server</name>
+    <description>认证服务中心</description>
     <properties>
         <java.version>1.8</java.version>
         <spring-cloud.version>Hoxton.SR8</spring-cloud.version>
-        <springcloud.alibaba.version>2.2.2.RELEASE</springcloud.alibaba.version>
     </properties>
+
     <dependencies>
         <!--依赖公共模块-->
         <dependency>
@@ -26,14 +26,24 @@
             <version>0.0.1-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
-                    <groupId>com.alibaba.cloud</groupId>
-                    <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>com.baomidou</groupId>
                     <artifactId>mybatis-plus-boot-starter</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.alibaba.cloud</groupId>
+                    <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+        <!--thymeleaf模板引擎-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <!--redis-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -43,27 +53,22 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
-        <!--OSS-->
         <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>aliyun-oss-spring-boot-starter</artifactId>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
         </dependency>
+
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-devtools</artifactId>-->
+        <!--            &lt;!&ndash;optional设置为true，才是真的使用热部署&ndash;&gt;-->
+        <!--            <optional>true</optional>-->
+        <!--        </dependency>-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
         </dependency>
     </dependencies>
 
@@ -73,14 +78,6 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <!--在2.2.0.RELEASE以后的版本中，OSS依赖被转移到了alibaba/aliyun-spring-boot仓库中-->
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>aliyun-spring-boot-dependencies</artifactId>
-                <version>1.0.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -96,4 +93,11 @@
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+        </repository>
+    </repositories>
 </project>

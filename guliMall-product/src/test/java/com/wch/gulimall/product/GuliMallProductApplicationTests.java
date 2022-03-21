@@ -42,11 +42,15 @@ class GuliMallProductApplicationTests {
     @Autowired
     AttrGroupDao attrGroupDao;
 
+
+
     @Test
     void AttrGroupDaoTest(){
         List<SkuItemVo.SpuItemBaseAttrVo> attrGroupWithAttrsBySpuId = attrGroupDao.getAttrGroupWithAttrsBySpuId(13L, 225L);
         System.out.println(attrGroupWithAttrsBySpuId);
     }
+
+
     @Test
     void categoryTest(){
         Long[] cateLogPath = categoryService.findCateLogPath(396L);

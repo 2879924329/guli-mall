@@ -26,6 +26,10 @@ spring:
               - Path=/api/ware/**
           filters:
               - RewritePath=/api/(?<segment>.*), /$\{segment}
+        - id: gulimall_auth_route
+          uri: lb://gulimall-auth-server
+          predicates:
+            - Host=auth.guli-mall.com
 
         - id: gulimall_host
           uri: lb://gulimall-product

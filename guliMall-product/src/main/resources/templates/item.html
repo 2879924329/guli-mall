@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
 <html>
 
 	<head>
@@ -429,10 +430,10 @@
 
 					<div class="imgbox">
 						<div class="probox">
-							<img class="img1" alt="" src="/static/item/img/59ded626N7c4cb0a3.jpg">
+							<img class="img1" th:src="${item.skuInfoEntity.skuDefaultImg}" alt="" src="/static/item/img/59ded626N7c4cb0a3.jpg">
 							<div class="hoverbox"></div>
 						</div>
-						<div class="showbox">
+						<div class="showbox" th:src="${item.skuInfoEntity.skuDefaultImg}">
 							<img class="img1" alt="" src="/static/item/img/59ded626N7c4cb0a3.jpg">
 						</div>
 					</div>
@@ -479,11 +480,11 @@
 
 					</div>
 					<div class="box-two">
-						<div class="box-name">
+						<div class="box-name" th:text="${item.skuInfoEntity.skuTitle}">
 							华为 HUAWEI Mate 10 6GB+128GB 亮黑色 移动联通电信4G手机 双卡双待
 						</div>
-						<div class="box-hide">预订用户预计11月30日左右陆续发货！麒麟970芯片！AI智能拍照！
-							<a href="/static/item/"><u>华为 HUAWEI Mate 10 Pro 10:08 限时限量抢！</u></a>
+						<div class="box-hide" th:text="${item.skuInfoEntity.skuSubtitle}">预订用户预计11月30日左右陆续发货！麒麟970芯片！AI智能拍照！
+							<a href="/static/item/"><u></u></a>
 						</div>
 						<div class="box-yuyue">
 							<div class="yuyue-one">
@@ -509,7 +510,7 @@
 								<li>京东价</li>
 								<li>
 									<span>￥</span>
-									<span>4499.00</span>
+									<span th:text="${item.skuInfoEntity.price}">4499.00</span>
 								</li>
 								<li>
 									预约享资格

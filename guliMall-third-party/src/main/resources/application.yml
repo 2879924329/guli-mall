@@ -6,5 +6,12 @@ spring:
         #server-addr: 192.168.84.88:8848
   application:
     name: gulimall-third-party
+    #阿里云短短信验证码
+  alicloud:
+    sms:
+      appcode: f01b7961ffe44a368a07e593d1711561
+      path: /sms/send-upgrade
+      template-id: M72CB42894
+      host: https://jumsendsms.market.alicloudapi.com
 server:
   port: 30000

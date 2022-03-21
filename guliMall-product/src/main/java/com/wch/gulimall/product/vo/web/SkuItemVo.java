@@ -11,7 +11,7 @@ import java.util.List;
  * @author wch
  * @version 1.0
  * @date 2022/3/19 22:05
- *
+ * <p>
  * 详情页面的内容
  */
 @Data
@@ -28,21 +28,28 @@ public class SkuItemVo {
     private List<SpuItemBaseAttrVo> groupAttrs;
 
     @Data
-    public static class SkuItemSaleVo{
+    public static class SkuItemSaleVo {
         private Long attrId;
         private String attrName;
-        private List<String> attrValues;
+        private List<AttrValueWithSkuIdVo> attrValues;
     }
+
     @Data
-    public static class SpuItemBaseAttrVo{
+    public static class SpuItemBaseAttrVo {
         private String groupName;
         private List<SpuBaseAttrVo> spuBaseAttrVos;
     }
 
     @Data
-    public static class SpuBaseAttrVo{
+    public static class SpuBaseAttrVo {
         private String attrName;
         private String attrValue;
+    }
+
+    @Data
+    public static class AttrValueWithSkuIdVo {
+        private String attrValue;
+        private String skuIds;
     }
 
 }

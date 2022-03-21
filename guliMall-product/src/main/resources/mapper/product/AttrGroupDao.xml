@@ -24,11 +24,11 @@
     <select id="getAttrGroupWithAttrsBySpuId" resultMap="spuItemAttrGroupVo">
 
         select pav.spu_id,
-               ag.attr_group_name,
+               ag.attr_group_name groupName,
                ag.attr_group_id,
                aar.attr_id,
-               attr.attr_name,
-               pav.attr_value
+               attr.attr_name attrName,
+               pav.attr_value attrValue
         from pms_attr_group ag left join pms_attr_attrgroup_relation aar on
             ag.attr_group_id = aar.attr_group_id
                                left join pms_attr attr on aar.attr_id = attr.attr_id
