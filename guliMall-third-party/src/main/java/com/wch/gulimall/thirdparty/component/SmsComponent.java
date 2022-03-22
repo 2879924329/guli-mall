@@ -13,6 +13,8 @@ import java.util.Map;
  * @author wch
  * @version 1.0
  * @date 2022/3/20 22:19
+ *
+ *木有阿里云短信模板，弃用
  */
 @Data
 @Component
@@ -22,6 +24,7 @@ public class SmsComponent {
     private String path;
     private String templateId;
     private String  appcode;
+
     public void sendCode(String phone, String code) {
         String method = "POST";
         Map<String, String> headers = new HashMap<>();
@@ -32,7 +35,6 @@ public class SmsComponent {
         querys.put("templateId", templateId);
         querys.put("value", code);
         Map<String, String> bodys = new HashMap<>();
-
         try {
             /**
              * 重要提示如下:
@@ -51,4 +53,6 @@ public class SmsComponent {
             e.printStackTrace();
         }
     }
+
+
 }

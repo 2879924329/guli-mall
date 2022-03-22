@@ -13,3 +13,7 @@ spring:
 server:
   port: 20000
 
+#ribbon的超时时间
+ribbon:
+  ReadTimeout: 30000
+  ConnectTimeout: 30000

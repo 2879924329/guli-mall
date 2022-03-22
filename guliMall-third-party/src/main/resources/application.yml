@@ -10,8 +10,14 @@ spring:
   alicloud:
     sms:
       appcode: f01b7961ffe44a368a07e593d1711561
-      path: /sms/send-upgrade
+      path: /sms/
       template-id: M72CB42894
       host: https://jumsendsms.market.alicloudapi.com
+      sign: 1
+      skin: 1
 server:
   port: 30000
+#ribbon的超时时间
+ribbon:
+  ReadTimeout: 30000
+  ConnectTimeout: 30000
