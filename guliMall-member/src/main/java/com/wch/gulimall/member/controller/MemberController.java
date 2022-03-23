@@ -3,13 +3,13 @@ package com.wch.gulimall.member.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.wch.common.exception.Code;
+import com.wch.gulimall.member.exception.PhoneExistException;
+import com.wch.gulimall.member.exception.UserExistException;
 import com.wch.gulimall.member.feign.CouponFeignService;
+import com.wch.gulimall.member.vo.UserRegisterVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.wch.gulimall.member.entity.MemberEntity;
 import com.wch.gulimall.member.service.MemberService;
@@ -101,6 +101,22 @@ public class MemberController {
     public R delete(@RequestBody Long[] ids){
 		memberService.removeByIds(Arrays.asList(ids));
 
+        return R.ok();
+    }
+
+    /**
+     * 会员注册
+     * @return
+     */
+    @PostMapping("/register")
+    public R register(@RequestBody UserRegisterVo userRegisterVo){
+        try {
+            memberService.register(userRegisterVo);
+        }catch (UserExistException e){
+            return R.error(Code.USER_EXIST_EXCEPTION.getCode(), Code.USER_EXIST_EXCEPTION.getMessage());
+        }catch (PhoneExistException e){
+            return R.error(Code.PHONE_EXIST_EXCEPTION.getCode(), Code.PHONE_EXIST_EXCEPTION.getMessage());
+        }
         return R.ok();
     }
 

@@ -11,5 +11,5 @@ public interface SmsService {
      * @param phone
      * @return
      */
-    boolean send(String phone);
+    boolean send(String phone, String code);
 }

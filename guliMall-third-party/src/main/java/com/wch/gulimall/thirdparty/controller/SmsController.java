@@ -20,8 +20,8 @@ public class SmsController {
     private SmsService smsService;
 
     @GetMapping("/send-code")
-    public R send(@RequestParam("phone") String  phone) {
-        boolean b = smsService.send(phone);
+    public R send(@RequestParam("phone") String  phone, @RequestParam("code") String code) {
+        boolean b = smsService.send(phone, code);
         if (b) {
             return R.ok();
         }else {

@@ -13,8 +13,7 @@ spring:
       path: /sms/
       template-id: M72CB42894
       host: https://jumsendsms.market.alicloudapi.com
-      sign: 1
-      skin: 1
+
 server:
   port: 30000
 #ribbon的超时时间

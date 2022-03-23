@@ -1,4 +1,4 @@
-package com.wch.gulimall.thirdparty.utils;
+package com.wch.common.utils;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
