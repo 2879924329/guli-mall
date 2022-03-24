@@ -7,6 +7,7 @@ import com.wch.common.utils.R;
 import com.wch.common.utils.RandomUtils;
 import com.wch.gulimall.authserver.feign.MemberFeignService;
 import com.wch.gulimall.authserver.feign.ThirdPartService;
+import com.wch.gulimall.authserver.vo.UserLoginVo;
 import com.wch.gulimall.authserver.vo.UserRegisterVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -16,7 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -125,7 +125,7 @@ public class LoginController {
                 }else {
                     //失败
                     Map<String, String> errorMap = new HashMap<>();
-                    errorMap.put("msg", register.getData(new TypeReference<String>(){}));
+                    errorMap.put("msg", register.getData("msg", new TypeReference<String>(){}));
                     redirectAttributes.addFlashAttribute("errors", errorMap);
                     return "redirect:http://auth.guli-mall.com/reg.html";
 
@@ -144,4 +144,27 @@ public class LoginController {
         }
 
     }
+
+    /**
+     * @RequestBody （json数据） ：提交的是表单数据，k-v结构的，不能写@RequestBody
+     * @param userLoginVo
+     * @return
+     */
+    @PostMapping("/login")
+    public String login(UserLoginVo userLoginVo, RedirectAttributes redirectAttributes){
+        //远程登录
+        R login = memberFeignService.login(userLoginVo);
+        if (login.getCode() == 0){
+            //重定向
+            return "redirect:http://guli-mall.com";
+        }else {
+            //失败，回到登录页，
+            Map<String, String> errorMap = new HashMap<>();
+            errorMap.put("msg", login.getData("msg", new TypeReference<String>(){}));
+            redirectAttributes.addFlashAttribute("errors", errorMap);
+            return "redirect:http://auth.guli-mall.com/login.html";
+        }
+    }
+
+
 }

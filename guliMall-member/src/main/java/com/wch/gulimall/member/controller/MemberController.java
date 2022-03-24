@@ -7,8 +7,10 @@ import com.wch.common.exception.Code;
 import com.wch.gulimall.member.exception.PhoneExistException;
 import com.wch.gulimall.member.exception.UserExistException;
 import com.wch.gulimall.member.feign.CouponFeignService;
+import com.wch.gulimall.member.vo.MemberLoginVo;
 import com.wch.gulimall.member.vo.UserRegisterVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import com.wch.gulimall.member.entity.MemberEntity;
@@ -120,4 +122,18 @@ public class MemberController {
         return R.ok();
     }
 
+    /**
+     * 登录
+     * @param memberLoginVo
+     * @return
+     */
+    @PostMapping("/login")
+    public R login(@RequestBody MemberLoginVo memberLoginVo){
+       MemberEntity member = memberService.login(memberLoginVo);
+       if (!StringUtils.isEmpty(member)){
+           return R.ok();
+       }else {
+           return R.error(Code.LOGIN_ACCOUNT_PASSWORD_INVALID_EXCEPTION.getCode(), Code.LOGIN_ACCOUNT_PASSWORD_INVALID_EXCEPTION.getMessage());
+       }
+    }
 }

@@ -13,7 +13,13 @@ spring:
 server:
   port: 20000
 
+
 #ribbon的超时时间
 ribbon:
   ReadTimeout: 30000
   ConnectTimeout: 30000
+gitee:
+  oauth:
+    client-id: 4fc163cb0798930d9bb30243f3acd158c623b2493a1448c2250b7d6aaa41d0ef
+    client-secret: bec0057ce73571d718185f44bc530ba1367a4fab9f92ece152bbec86485f6d5c
+    redirect-url: http://auth.guli-mall.com/oauth2/success
