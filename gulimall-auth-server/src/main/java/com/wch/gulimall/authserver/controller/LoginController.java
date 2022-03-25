@@ -3,6 +3,8 @@ package com.wch.gulimall.authserver.controller;
 import com.alibaba.fastjson.TypeReference;
 import com.wch.common.constant.AuthServerConstant;
 import com.wch.common.exception.Code;
+import com.wch.common.to.GiteeUser;
+import com.wch.common.to.UserResponseTo;
 import com.wch.common.utils.R;
 import com.wch.common.utils.RandomUtils;
 import com.wch.gulimall.authserver.feign.MemberFeignService;
@@ -20,6 +22,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
@@ -151,10 +154,15 @@ public class LoginController {
      * @return
      */
     @PostMapping("/login")
-    public String login(UserLoginVo userLoginVo, RedirectAttributes redirectAttributes){
+    public String login(UserLoginVo userLoginVo, RedirectAttributes redirectAttributes,
+                        HttpSession session){
         //远程登录
         R login = memberFeignService.login(userLoginVo);
         if (login.getCode() == 0){
+            Object data = login.getData("data", new TypeReference<UserResponseTo>() {
+            });
+            //放入session
+            session.setAttribute(AuthServerConstant.LOGIN_USER, data);
             //重定向
             return "redirect:http://guli-mall.com";
         }else {
@@ -166,5 +174,16 @@ public class LoginController {
         }
     }
 
+    @GetMapping("/login.html")
+    public String loginPage(HttpSession session){
+        Object attribute = session.getAttribute(AuthServerConstant.LOGIN_USER);
+        if (StringUtils.isEmpty(attribute)){
+            //木有登录，跳转
+            return "login";
+        }else {
+            //重定向
+            return "redirect:http://guli-mall.com";
+        }
+    }
 
 }

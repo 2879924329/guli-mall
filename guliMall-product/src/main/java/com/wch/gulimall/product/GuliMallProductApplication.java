@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -69,8 +70,12 @@ import java.util.concurrent.ThreadPoolExecutor;
  *            特殊数据特殊设置
  *
  *
+ * @EnableRedisHttpSession 的核心原理 导入了RedisHttpSessionConfiguration,
+ *  
+ *
  */
 //@EnableCaching（移步到配置类）
+@EnableRedisHttpSession
 @EnableFeignClients(basePackages = "com.wch.gulimall.product.feign")
 @MapperScan(basePackages = "com.wch.gulimall.product.dao")
 @SpringBootApplication

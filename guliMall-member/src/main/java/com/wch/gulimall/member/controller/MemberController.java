@@ -131,9 +131,24 @@ public class MemberController {
     public R login(@RequestBody MemberLoginVo memberLoginVo){
        MemberEntity member = memberService.login(memberLoginVo);
        if (!StringUtils.isEmpty(member)){
-           return R.ok();
+           return R.ok().setData(member);
        }else {
            return R.error(Code.LOGIN_ACCOUNT_PASSWORD_INVALID_EXCEPTION.getCode(), Code.LOGIN_ACCOUNT_PASSWORD_INVALID_EXCEPTION.getMessage());
        }
+    }
+
+    /**
+     * 登录
+     * @param memberLoginVo
+     * @return
+     */
+    @PostMapping("/oauth2/login")
+    public R oauthLogin(@RequestBody MemberLoginVo memberLoginVo){
+        MemberEntity member = memberService.login(memberLoginVo);
+        if (!StringUtils.isEmpty(member)){
+            return R.ok();
+        }else {
+            return R.error(Code.LOGIN_ACCOUNT_PASSWORD_INVALID_EXCEPTION.getCode(), Code.LOGIN_ACCOUNT_PASSWORD_INVALID_EXCEPTION.getMessage());
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.wch.gulimall.authserver.service;
 
 import com.wch.gulimall.authserver.config.GiteeLoginConfig;
-import com.wch.gulimall.authserver.vo.GiteeUser;
+import com.wch.common.to.GiteeUser;
 
 /**
  * @author wch
