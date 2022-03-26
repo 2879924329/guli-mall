@@ -20,6 +20,8 @@
         <module>gulimall-warehouse</module>
         <module>gulimall-search</module>
         <module>guliMall-third-party</module>
+        <module>gulimall-auth-server</module>
+        <module>gulimall-cart</module>
     </modules>
 
 

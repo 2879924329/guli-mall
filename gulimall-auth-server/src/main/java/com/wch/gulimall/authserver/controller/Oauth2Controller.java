@@ -43,12 +43,7 @@ public class Oauth2Controller {
         GiteeUser user = giteeOauth2Service.getUser(accessToken);
         //TODO 如果用户是第一次登录，自动注册。（为当前社交用户生成一个会员信息账号，以后这个社交账号对应指定的会员）
         //登录或者注册这个社交用户
-
-        System.out.println(user.getName());
-        System.out.println(user.getId());
-        System.out.println(user.getBio());
         session.setAttribute(AuthServerConstant.LOGIN_USER, user);
-
         //重定向
         return "redirect:http://guli-mall.com";
     }
