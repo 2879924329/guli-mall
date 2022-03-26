@@ -16,40 +16,21 @@ import java.util.List;
  */
 @Data
 public class SkuItemVo {
-    //sku的基本信息
-    SkuInfoEntity skuInfoEntity;
-    //sku的图片信息
-    List<SkuImagesEntity> images;
-    //获取spu的销售属性组合
-    List<SkuItemSaleVo> skuItemSaleVos;
-    //获取spu的介绍
-    SpuInfoDescEntity spuInfoDescEntity;
-    //获取spu规格参数信息
-    private List<SpuItemBaseAttrVo> groupAttrs;
 
-    @Data
-    public static class SkuItemSaleVo {
-        private Long attrId;
-        private String attrName;
-        private List<AttrValueWithSkuIdVo> attrValues;
-    }
+    //1、sku基本信息的获取  pms_sku_info
+    private SkuInfoEntity info;
 
-    @Data
-    public static class SpuItemBaseAttrVo {
-        private String groupName;
-        private List<SpuBaseAttrVo> spuBaseAttrVos;
-    }
+    private boolean hasStock = true;
 
-    @Data
-    public static class SpuBaseAttrVo {
-        private String attrName;
-        private String attrValue;
-    }
+    //2、sku的图片信息    pms_sku_images
+    private List<SkuImagesEntity> images;
 
-    @Data
-    public static class AttrValueWithSkuIdVo {
-        private String attrValue;
-        private String skuIds;
-    }
+    //3、获取spu的销售属性组合
+    private List<SkuItemSaleAttrVo> saleAttr;
 
+    //4、获取spu的介绍
+    private SpuInfoDescEntity desc;
+
+    //5、获取spu的规格参数信息
+    private List<SpuItemAttrGroupVo> groupAttrs;
 }

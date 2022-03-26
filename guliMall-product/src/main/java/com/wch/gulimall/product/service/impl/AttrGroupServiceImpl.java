@@ -4,6 +4,7 @@ import com.wch.gulimall.product.entity.AttrEntity;
 import com.wch.gulimall.product.service.AttrService;
 import com.wch.gulimall.product.vo.AttrGroupWithAttrsVo;
 import com.wch.gulimall.product.vo.web.SkuItemVo;
+import com.wch.gulimall.product.vo.web.SpuItemAttrGroupVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -90,7 +91,7 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
      * @return
      */
     @Override
-    public List<SkuItemVo.SpuItemBaseAttrVo> getAttrGroupWithAttrsBySpuId(Long spuId, Long catelogId) {
+    public List<SpuItemAttrGroupVo> getAttrGroupWithAttrsBySpuId(Long spuId, Long catelogId) {
        return baseMapper.getAttrGroupWithAttrsBySpuId(spuId, catelogId);
     }
 

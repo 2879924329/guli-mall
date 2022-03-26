@@ -5,6 +5,7 @@ import com.wch.gulimall.product.entity.BrandEntity;
 import com.wch.gulimall.product.service.BrandService;
 import com.wch.gulimall.product.service.CategoryService;
 import com.wch.gulimall.product.vo.web.SkuItemVo;
+import com.wch.gulimall.product.vo.web.SpuItemAttrGroupVo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -46,7 +47,7 @@ class GuliMallProductApplicationTests {
 
     @Test
     void AttrGroupDaoTest(){
-        List<SkuItemVo.SpuItemBaseAttrVo> attrGroupWithAttrsBySpuId = attrGroupDao.getAttrGroupWithAttrsBySpuId(13L, 225L);
+        List<SpuItemAttrGroupVo> attrGroupWithAttrsBySpuId = attrGroupDao.getAttrGroupWithAttrsBySpuId(13L, 225L);
         System.out.println(attrGroupWithAttrsBySpuId);
     }
 

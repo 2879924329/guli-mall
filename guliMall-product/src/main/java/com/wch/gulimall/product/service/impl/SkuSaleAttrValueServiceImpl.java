@@ -1,5 +1,6 @@
 package com.wch.gulimall.product.service.impl;
 
+import com.wch.gulimall.product.vo.web.SkuItemSaleAttrVo;
 import com.wch.gulimall.product.vo.web.SkuItemVo;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +36,7 @@ public class SkuSaleAttrValueServiceImpl extends ServiceImpl<SkuSaleAttrValueDao
      * @return
      */
     @Override
-    public List<SkuItemVo.SkuItemSaleVo> getSaleAttrsBySpuId(Long spuId) {
+    public List<SkuItemSaleAttrVo> getSaleAttrsBySpuId(Long spuId) {
         return baseMapper.getSaleAttrsBySpuId(spuId);
     }
 

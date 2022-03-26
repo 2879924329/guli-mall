@@ -8,5 +8,5 @@ spring:
       discovery:
         server-addr: 101.200.200.220:8848
   redis:
-    host: 192.168.84.88
+    host: 101.200.200.220
     port: 6379
