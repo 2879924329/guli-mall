@@ -679,7 +679,7 @@
 					</div>
 
 					<div class="box-btns-two">
-						<a class="addToCart" href="http://cart.guli-mall.com/addToCart">
+						<a th:attr="skuId=${item.info.skuId}" class="addToCart" href="#" id="addToCartA">
 							加入购物车
 						</a>
 					</div>
@@ -1355,7 +1355,7 @@
 <script>
 	$(".sku_attr_value").click(function () {
 		// 1、点击的元素添加上自定义的属性
-		let skus = new Array();
+		let skus = [];
 		let curr = $(this).attr("skus").split(",");
 
 		$(this).parent().parent().find(".sku_attr_value").removeClass("checked");
@@ -1382,15 +1382,17 @@
 	function changeCheckedStyle() {
 		$(".sku_attr_value").parent().css({"border": "solid 1px #ccc"});
 		$("a[class='sku_attr_value checked']").parent().css({"border": "solid 1px red"});
-	};
+	}
 
 
-	/*$(".addToCart").click(function () {
+	$("#addToCartA").click(function () {
 		let skuId = $(this).attr("skuId");
 		let num = $("#productNum").val();
-		location.href = "http://cart.gulimall.com/addCartItem?skuId=" + skuId + "&num=" + num;
+		location.href = "http://cart.guli-mall.com/addToCart?skuId=" + skuId + "&num=" + num;
 		return false;
-	});*/
+	});
+
+
 
 	$(".seckill").click(function () {
 		var isLogin = [[${session.loginUser != null}]];     //true

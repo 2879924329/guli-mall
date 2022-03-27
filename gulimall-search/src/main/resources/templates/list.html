@@ -65,7 +65,7 @@
         <ul>
             <li>
                 <a th:if="${session.loginUser == null}" href="http://auth.guli-mall.com/login.html" class="li_2">你好，请登录</a>
-                <a th:else style="width: 100px">你好，[[${session.loginUser.name}]]</a>
+                <a th:if="${session.loginUser != null}" style="width: 100px">你好，[[${session.loginUser.name}]]</a>
             </li>
             <li>
                 <a th:if="${session.loginUser == null}" href="http://auth.guli-mall.com/reg.html">免费注册</a>

@@ -17,7 +17,7 @@ spring:
     cache: false
   redis:
     port: 6379
-    host: 101.200.200.220
+    host: 192.168.84.88
    #springcache
   cache:
     type: redis

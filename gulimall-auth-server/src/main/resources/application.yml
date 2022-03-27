@@ -6,7 +6,7 @@ spring:
       discovery:
         server-addr: 101.200.200.220:8848
   redis:
-    host: 101.200.200.220
+    host: 192.168.84.88
     port: 6379
   thymeleaf:
     cache: false
