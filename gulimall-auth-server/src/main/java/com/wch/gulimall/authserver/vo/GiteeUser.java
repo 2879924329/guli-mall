@@ -1,4 +1,4 @@
-package com.wch.common.to;
+package com.wch.gulimall.authserver.vo;
 
 import lombok.Data;
 
@@ -7,11 +7,11 @@ import java.io.Serializable;
 /**
  * @author wch
  * @version 1.0
- * @date 2022/3/23 22:22
+ * @date 2022/3/31 20:39
  */
 @Data
 public class GiteeUser implements Serializable {
-        private String name;
-        private Long id;
-        private String bio;
+    private Long id;
+    private String bio;
+    private String name;
 }

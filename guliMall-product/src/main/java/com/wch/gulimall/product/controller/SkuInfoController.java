@@ -1,14 +1,11 @@
 package com.wch.gulimall.product.controller;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.wch.gulimall.product.entity.SkuInfoEntity;
 import com.wch.gulimall.product.service.SkuInfoService;
@@ -84,6 +81,11 @@ public class SkuInfoController {
 		skuInfoService.removeByIds(Arrays.asList(skuIds));
 
         return R.ok();
+    }
+
+    @GetMapping("/{skuId}/getPrice")
+    public BigDecimal getPrice(@PathVariable("skuId") Long skuId){
+     return skuInfoService.getById(skuId).getPrice();
     }
 
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -50,7 +51,7 @@ public class CartController {
     public String addToCart(@RequestParam("skuId") Long skuId,
                             @RequestParam("num") Integer num,
                             RedirectAttributes redirectAttributes) throws ExecutionException, InterruptedException {
-        CartItemVo cartItemVo = cartService.addToCart(skuId, num);
+        cartService.addToCart(skuId, num);
         redirectAttributes.addAttribute("skuId", skuId);
         //防止重复请求，使用重定向
         return "redirect:http://cart.guli-mall.com/addToCartSuccess.html";
@@ -69,32 +70,44 @@ public class CartController {
 
     /**
      * 购物车商品选项的的选中状态
+     *
      * @param skuId
      * @param checked
      * @return
      */
     @GetMapping("/checkItem")
     public String checkItem(@RequestParam("skuId") Long skuId,
-                            @RequestParam("checked") Integer checked){
+                            @RequestParam("checked") Integer checked) {
         cartService.checkItem(skuId, checked);
         return "redirect:http://cart.guli-mall.com/cart.html";
     }
 
     /**
      * 购物车列表中的购物项的改变数量
+     *
      * @param skuId
      * @param num
      * @return
      */
     @GetMapping("/countItem")
-    public String countItem(@RequestParam("skuId") Long skuId,@RequestParam("num") Integer num){
+    public String countItem(@RequestParam("skuId") Long skuId, @RequestParam("num") Integer num) {
         cartService.changeCountItem(skuId, num);
         return "redirect:http://cart.guli-mall.com/cart.html";
     }
 
     @GetMapping("/deleteItem")
-    public String deleteItem(@RequestParam("skuId") Long skuId){
+    public String deleteItem(@RequestParam("skuId") Long skuId) {
         cartService.deleteItem(skuId);
         return "redirect:http://cart.guli-mall.com/cart.html";
+    }
+
+    /**
+     * 获取当前用户的所有要结算的购物车列表
+     *
+     * @return
+     */
+    @GetMapping("/current/cart-items")
+    public List<CartItemVo> getCartItems() {
+        return cartService.getCurrentCartItem();
     }
 }

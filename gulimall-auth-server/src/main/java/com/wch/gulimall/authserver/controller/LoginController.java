@@ -3,8 +3,8 @@ package com.wch.gulimall.authserver.controller;
 import com.alibaba.fastjson.TypeReference;
 import com.wch.common.constant.AuthServerConstant;
 import com.wch.common.exception.Code;
-import com.wch.common.to.GiteeUser;
-import com.wch.common.to.UserResponseTo;
+
+import com.wch.common.to.MemberEntityTo;
 import com.wch.common.utils.R;
 import com.wch.common.utils.RandomUtils;
 import com.wch.gulimall.authserver.feign.MemberFeignService;
@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -26,7 +25,6 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -159,8 +157,7 @@ public class LoginController {
         //远程登录
         R login = memberFeignService.login(userLoginVo);
         if (login.getCode() == 0){
-            Object data = login.getData("data", new TypeReference<UserResponseTo>() {
-            });
+            Object data = login.getData("data", new TypeReference<MemberEntityTo>() {});
             //放入session
             session.setAttribute(AuthServerConstant.LOGIN_USER, data);
             //重定向

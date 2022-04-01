@@ -1,5 +1,6 @@
 package com.wch.gulimall.product;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wch.gulimall.product.dao.AttrGroupDao;
 import com.wch.gulimall.product.entity.BrandEntity;
 import com.wch.gulimall.product.service.BrandService;
@@ -18,6 +19,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -79,5 +81,11 @@ class GuliMallProductApplicationTests {
         System.out.println(redissonClient);
     }
 
+
+    @Test
+    void testFor(){
+        List<? extends Serializable> list = Arrays.asList("123423", 23424, 2342342, 34545, 64, 56, 4, 6, 45, 7, 56, 7, 57);
+        list.forEach(System.out::println);
+    }
 
 }

@@ -1,9 +1,10 @@
 package com.wch.gulimall.authserver.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.wch.common.constant.AuthServerConstant;
 import com.wch.gulimall.authserver.config.GiteeLoginConfig;
 import com.wch.gulimall.authserver.service.GiteeOauth2Service;
-import com.wch.common.to.GiteeUser;
+import com.wch.gulimall.authserver.vo.GiteeUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

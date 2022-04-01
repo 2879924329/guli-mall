@@ -1,7 +1,7 @@
 package com.wch.gulimall.order.interceptor;
 
 import com.wch.common.constant.AuthServerConstant;
-import com.wch.common.to.GiteeUser;
+import com.wch.common.to.MemberEntityTo;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -17,10 +17,10 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class LoginUserInterceptor implements HandlerInterceptor {
 
-    public static ThreadLocal<GiteeUser> loginUser = new ThreadLocal<>();
+    public static ThreadLocal<MemberEntityTo> loginUser = new ThreadLocal<>();
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        GiteeUser attribute = (GiteeUser) request.getSession().getAttribute(AuthServerConstant.LOGIN_USER);
+        MemberEntityTo attribute = (MemberEntityTo) request.getSession().getAttribute(AuthServerConstant.LOGIN_USER);
         if (!StringUtils.isEmpty(attribute)){
             loginUser.set(attribute);
             return true;

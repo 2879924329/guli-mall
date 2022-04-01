@@ -3,7 +3,7 @@ package com.wch.gulimall.authserver.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.wch.gulimall.authserver.config.GiteeLoginConfig;
 import com.wch.gulimall.authserver.service.GiteeOauth2Service;
-import com.wch.common.to.GiteeUser;
+import com.wch.gulimall.authserver.vo.GiteeUser;
 import okhttp3.*;
 import org.springframework.stereotype.Service;
 

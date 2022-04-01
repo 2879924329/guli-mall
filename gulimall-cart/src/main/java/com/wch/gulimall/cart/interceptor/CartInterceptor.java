@@ -2,7 +2,7 @@ package com.wch.gulimall.cart.interceptor;
 
 import com.wch.common.constant.AuthServerConstant;
 import com.wch.common.constant.CartConstant;
-import com.wch.common.to.GiteeUser;
+import com.wch.common.to.MemberEntityTo;
 import com.wch.gulimall.cart.vo.UserInfoTo;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.stereotype.Component;
@@ -41,7 +41,7 @@ public class CartInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         UserInfoTo userInfoTo = new UserInfoTo();
         HttpSession session = request.getSession();
-        GiteeUser user = (GiteeUser) session.getAttribute(AuthServerConstant.LOGIN_USER);
+        MemberEntityTo user = (MemberEntityTo) session.getAttribute(AuthServerConstant.LOGIN_USER);
 
         if (!StringUtils.isEmpty(user)) {
             //用户登录

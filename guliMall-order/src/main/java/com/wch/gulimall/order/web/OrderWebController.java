@@ -1,6 +1,10 @@
 package com.wch.gulimall.order.web;
 
+import com.wch.gulimall.order.vo.OrderConfirmVo;
+import com.wch.gulimall.order.service.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
@@ -10,12 +14,19 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 public class OrderWebController {
+
+    @Autowired
+    private OrderService orderService;
     /**
      * 购物车结算
      * @return
      */
     @GetMapping("/toTrade")
-    public String toTrade(){
+    public String toTrade(Model model){
+       OrderConfirmVo confirmVo = orderService.confirmOrder();
+       model.addAttribute("orderConfirmData", confirmVo);
         return "confirm";
     }
+
+
 }

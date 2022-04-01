@@ -72,8 +72,10 @@ public class CartVo {
     public BigDecimal getTotalAmount(){
         BigDecimal amount = new BigDecimal("0");
         for (CartItemVo cartItemVo : cartItemVos) {
-            BigDecimal totalPrice = cartItemVo.getTotalPrice();
-            amount = amount.add(totalPrice);
+            if (Boolean.TRUE.equals(cartItemVo.getChecked())){
+                BigDecimal totalPrice = cartItemVo.getTotalPrice();
+                amount = amount.add(totalPrice);
+            }
         }
         return amount.subtract(this.getReduce());
     }
