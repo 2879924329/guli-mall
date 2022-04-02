@@ -721,7 +721,7 @@
         </p>
         <p class="qian_y">
             <span>运费： </span>
-            <span class="rmb"> &nbsp ￥0.00</span>
+            <span class="rmb"> &nbsp ￥<b id="fareEle"></b> </span>
         </p>
         <p class="qian_y">
             <span>服务费： </span>
@@ -735,12 +735,17 @@
     </div>
 
     <div class="yfze">
-        <p class="yfze_a"><span class="z">应付总额：</span><span class="hq">￥[[${#numbers.formatDecimal(orderConfirmData.payPrice,1,2)}]]</span>
+        <p class="yfze_a"><span class="z">应付总额：</span><span class="hq">￥<b id="payPrice">[[${#numbers.formatDecimal(orderConfirmData.payPrice,1,2)}]]</b> </span>
         </p>
-        <p class="yfze_b">寄送至：[[${orderConfirmData.payPrice}]] 北京 朝阳区 三环到四环之间 朝阳北路复兴国际大厦23层麦田房产 IT-中心研发二部 收货人：赵存权
-            188****5052</p>
+        <p class="yfze_b">寄送至：<span id="receiveAddressEle"></span>  <span> | </span> 收货人：<span id="receiverEle"></span>
+        </p>
     </div>
-    <button class="tijiao">提交订单</button>
+    <form action="http://order.guli-mall.com/submit-order" method="post">
+        <input id="addrIdInput" type="hidden" name="addrId" >
+        <input  id="payPriceInput" type="hidden" name="payPrice">
+    <input name="orderToken" type="hidden" th:value="${orderConfirmData.orderToken}"/>
+    <button class="tijiao" type="submit">提交订单</button>
+    </form>
 </div>
 </div>
 
@@ -974,11 +979,13 @@
             $('.h-r-1').css('display', 'none')
         })
         hightLight();
+
+        getFare($(".addr-item p[def='1']").attr("addrId"))
     })
 
     function hightLight() {
-        $(".addr-item p").css({"border":"2px solid gray"})
-        $(".addr-item p[def='1']").css({"border":"2px solid red"})
+        $(".addr-item p").css({"border": "2px solid gray"})
+        $(".addr-item p[def='1']").css({"border": "2px solid red"})
     }
 
     $(".addr-item p").click(function () {
@@ -988,11 +995,27 @@
         //获取当前的地址id
         const addrId = $(this).attr("addrId");
         //发送ajax请求获取运费信息
-        $.get("http://guli-mall.com/api/ware/wareinfo/fare?addrId="+addrId, function (data) {
-            console.log(data)
-        })
+        getFare(addrId);
 
     })
+
+    function getFare(addrId) {
+        //给表单回填选择的地址
+        $("#addrIdInput").val(addrId);
+        $.get("http://guli-mall.com/api/ware/wareinfo/fare?addrId=" + addrId, function (reponse) {
+            console.log(reponse)
+            $("#fareEle").text(reponse.data.fare)
+            const total = [[${orderConfirmData.payPrice}]];
+            //设置运费
+            const  payPrice = total * 1 + reponse.data.fare * 1;
+            //回填支付金额
+            $("#payPriceInput").val(payPrice)
+            $("#payPrice").text(payPrice)
+            //设置收货人
+            $("#receiveAddressEle").text(reponse.data.address.province + " " + reponse.data.address.detailAddress )
+            $("#receiverEle").text(reponse.data.address.name)
+        })
+    }
 </script>
 </body>
 

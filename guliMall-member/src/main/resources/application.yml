@@ -20,3 +20,7 @@ mybatis-plus:
       id-type: auto
 server:
   port: 8000
+#ribbon的超时时间
+ribbon:
+  ReadTimeout: 30000
+  ConnectTimeout: 30000

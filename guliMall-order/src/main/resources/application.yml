@@ -39,4 +39,7 @@ mybatis-plus:
     db-config:
       #调整主键自增
       id-type: auto
-
+#ribbon的超时时间
+ribbon:
+  ReadTimeout: 30000
+  ConnectTimeout: 30000

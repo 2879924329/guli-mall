@@ -3,6 +3,7 @@ package com.wch.gulimall.warehouse.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wch.common.utils.PageUtils;
 import com.wch.gulimall.warehouse.entity.WareInfoEntity;
+import com.wch.gulimall.warehouse.vo.FareVo;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -18,6 +19,6 @@ public interface WareInfoService extends IService<WareInfoEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
 
-    BigDecimal getFare(Long addrId);
+    FareVo getFare(Long addrId);
 }
 

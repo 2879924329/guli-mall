@@ -4,6 +4,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.wch.common.utils.R;
 import com.wch.gulimall.warehouse.feign.MemberFeignService;
 import com.wch.gulimall.warehouse.to.MemberAddressTo;
+import com.wch.gulimall.warehouse.vo.FareVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,14 +54,18 @@ public class WareInfoServiceImpl extends ServiceImpl<WareInfoDao, WareInfoEntity
      * @return
      */
     @Override
-    public BigDecimal getFare(Long addrId) {
+    public FareVo getFare(Long addrId) {
         R addrInfo = memberFeignService.addrInfo(addrId);
+        FareVo fareVo = new FareVo();
         Random random = new Random();
         MemberAddressTo addrInfoData = addrInfo.getData("memberReceiveAddress", new TypeReference<MemberAddressTo>() {});
         if (!ObjectUtils.isEmpty(addrInfoData)){
             //运费随机取一个
             int nextInt = random.nextInt(20);
-            return new BigDecimal(nextInt);
+            BigDecimal fare = new BigDecimal(nextInt);
+            fareVo.setFare(fare);
+            fareVo.setAddress(addrInfoData);
+            return fareVo;
         }
         return null;
     }
