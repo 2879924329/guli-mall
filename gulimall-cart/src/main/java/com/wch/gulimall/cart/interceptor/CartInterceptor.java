@@ -42,7 +42,6 @@ public class CartInterceptor implements HandlerInterceptor {
         UserInfoTo userInfoTo = new UserInfoTo();
         HttpSession session = request.getSession();
         MemberEntityTo user = (MemberEntityTo) session.getAttribute(AuthServerConstant.LOGIN_USER);
-
         if (!StringUtils.isEmpty(user)) {
             //用户登录
             userInfoTo.setUserId(user.getId());
@@ -88,6 +87,5 @@ public class CartInterceptor implements HandlerInterceptor {
             cookie.setMaxAge(CartConstant.TEMP_USER_COOKIE_TIMEOUT);
             response.addCookie(cookie);
         }
-        threadLocal.remove();
     }
 }

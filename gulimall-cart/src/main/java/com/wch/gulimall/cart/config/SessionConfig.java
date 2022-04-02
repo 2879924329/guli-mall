@@ -6,9 +6,9 @@ package com.wch.gulimall.cart.config;
  * @date 2022/3/26 20:06
  */
 
-import com.alibaba.fastjson.support.spring.GenericFastJsonRedisSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.session.web.http.CookieSerializer;
 import org.springframework.session.web.http.DefaultCookieSerializer;
@@ -30,7 +30,7 @@ public class SessionConfig {
         return defaultCookieSerializer;
     }
     @Bean
-    public RedisSerializer<Object> springSessionDefaultRedisSerializer(){
-        return new GenericFastJsonRedisSerializer();
+    public RedisSerializer<Object> springSessionDefaultRedisSerializer() {
+        return new GenericJackson2JsonRedisSerializer();
     }
 }

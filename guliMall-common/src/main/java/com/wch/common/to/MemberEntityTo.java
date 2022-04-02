@@ -1,5 +1,6 @@
 package com.wch.common.to;
 
+
 import lombok.Data;
 
 import java.io.Serializable;
@@ -88,9 +89,9 @@ public class MemberEntityTo implements Serializable {
 	private Date createTime;
 
 	/**
-	 * 社交登录UID
+	 * 微博社交账户uid
 	 */
-	private String socialUid;
+	private String weiboUid;
 
 	/**
 	 * 社交登录TOKEN
@@ -101,4 +102,5 @@ public class MemberEntityTo implements Serializable {
 	 * 社交登录过期时间
 	 */
 	private long expiresIn;
+
 }

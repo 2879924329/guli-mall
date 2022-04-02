@@ -7,6 +7,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author wch
@@ -27,6 +28,14 @@ public class OrderConfirmVo {
      */
     private List<OrderItemVo> items;
 
+    public Integer getCount(){
+        Integer count = 0;
+        for (OrderItemVo item : items) {
+            count += item.getCount();
+        }
+        return count;
+    }
+
     //TODO 发票记录
     /**
      * 优惠券信息
@@ -37,6 +46,9 @@ public class OrderConfirmVo {
      * 订单防重令牌
      */
     private String orderToken;
+
+    private Map<Long, Boolean> stocks;
+
 
 
 

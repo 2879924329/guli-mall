@@ -1,6 +1,6 @@
 package com.wch.gulimall.authserver.config;
 
-import com.alibaba.fastjson.support.spring.GenericFastJsonRedisSerializer;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
@@ -25,7 +25,7 @@ public class SessionConfig {
         return defaultCookieSerializer;
     }
     @Bean
-    public RedisSerializer<Object> springSessionDefaultRedisSerializer(){
-        return new GenericFastJsonRedisSerializer();
+    public RedisSerializer<Object> springSessionDefaultRedisSerializer() {
+        return new GenericJackson2JsonRedisSerializer();
     }
 }

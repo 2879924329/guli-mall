@@ -145,15 +145,17 @@ public class CartServiceImpl implements CartService {
 
     /**
      * 清空购物车数据
+     *
      * @param cartKey
      */
     @Override
-    public void cleanCart(String cartKey){
-       stringRedisTemplate.delete(cartKey);
+    public void cleanCart(String cartKey) {
+        stringRedisTemplate.delete(cartKey);
     }
 
     /**
      * 勾选购物项
+     *
      * @param skuId
      * @param checked
      */
@@ -168,6 +170,7 @@ public class CartServiceImpl implements CartService {
 
     /**
      * 修改购物项数量
+     *
      * @param skuId
      * @param num
      */
@@ -181,6 +184,7 @@ public class CartServiceImpl implements CartService {
 
     /**
      * 删除购物车选项
+     *
      * @param skuId
      */
     @Override
@@ -192,7 +196,7 @@ public class CartServiceImpl implements CartService {
     public List<CartItemVo> getCurrentCartItem() {
         Long userId = CartInterceptor.threadLocal.get().getUserId();
         String cartKey = CartConstant.CART_PREFIX + userId;
-        if (ObjectUtils.isEmpty(userId)){
+        if (ObjectUtils.isEmpty(userId)) {
             return Collections.emptyList();
         }
         /**
@@ -200,8 +204,9 @@ public class CartServiceImpl implements CartService {
          */
         return getCartItem(cartKey).stream().filter(CartItemVo::getChecked).map(item -> {
             //获取最新价格
-            BigDecimal price = productFeignService.getPrice(item.getSkuId());
-            item.setPrice(price);
+            R r = productFeignService.getPrice(item.getSkuId());
+            String price = (String) r.get("data");
+            item.setPrice(new BigDecimal(price));
             return item;
         }).collect(Collectors.toList());
     }

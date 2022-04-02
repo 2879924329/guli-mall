@@ -1,6 +1,5 @@
-package com.wch.gulimall.order.to;
+package com.wch.gulimall.warehouse.to;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 /**

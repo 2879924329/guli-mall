@@ -157,7 +157,7 @@ public class LoginController {
         //远程登录
         R login = memberFeignService.login(userLoginVo);
         if (login.getCode() == 0){
-            Object data = login.getData("data", new TypeReference<MemberEntityTo>() {});
+            MemberEntityTo data = login.getData("data", new TypeReference<MemberEntityTo>() {});
             //放入session
             session.setAttribute(AuthServerConstant.LOGIN_USER, data);
             //重定向
