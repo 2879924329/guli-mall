@@ -57,12 +57,10 @@ public class WareInfoServiceImpl extends ServiceImpl<WareInfoDao, WareInfoEntity
     public FareVo getFare(Long addrId) {
         R addrInfo = memberFeignService.addrInfo(addrId);
         FareVo fareVo = new FareVo();
-        Random random = new Random();
         MemberAddressTo addrInfoData = addrInfo.getData("memberReceiveAddress", new TypeReference<MemberAddressTo>() {});
         if (!ObjectUtils.isEmpty(addrInfoData)){
-            //运费随机取一个
-            int nextInt = random.nextInt(20);
-            BigDecimal fare = new BigDecimal(nextInt);
+            //写死，5元钱
+            BigDecimal fare = new BigDecimal("5");
             fareVo.setFare(fare);
             fareVo.setAddress(addrInfoData);
             return fareVo;

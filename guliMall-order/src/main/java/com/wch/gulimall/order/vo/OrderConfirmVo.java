@@ -1,7 +1,6 @@
 package com.wch.gulimall.order.vo;
 
 import com.wch.gulimall.order.to.MemberAddressTo;
-import com.wch.gulimall.order.to.OrderItemVo;
 import lombok.Data;
 import org.springframework.util.CollectionUtils;
 

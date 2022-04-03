@@ -4,7 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.wch.common.exception.Code;
+import com.wch.common.exception.NoStockException;
 import com.wch.gulimall.warehouse.vo.SkuHasStockVo;
+import com.wch.gulimall.warehouse.vo.WareLockVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +31,16 @@ public class WareSkuController {
     @Autowired
     private WareSkuService wareSkuService;
 
+    @PostMapping("/lock/order")
+    public R orderWareLock(@RequestBody WareLockVo wareLockVo){
+
+        try {
+          Boolean stock = wareSkuService.lockOrderWare(wareLockVo);
+            return R.ok();
+        } catch (NoStockException e) {
+            return R.error(Code.NO_STOCK_EXCEPTION.getCode(), Code.NO_STOCK_EXCEPTION.getMessage());
+        }
+    }
     /**
      * 列表
      */

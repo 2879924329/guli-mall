@@ -1,7 +1,7 @@
 package com.wch.gulimall.order.feign;
 
 
-import com.wch.gulimall.order.to.OrderItemVo;
+import com.wch.gulimall.order.vo.OrderItemVo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 

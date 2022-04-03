@@ -23,7 +23,7 @@ public class OrderEntity implements Serializable {
 	/**
 	 * id
 	 */
-	@TableId
+
 	private Long id;
 	/**
 	 * member_id

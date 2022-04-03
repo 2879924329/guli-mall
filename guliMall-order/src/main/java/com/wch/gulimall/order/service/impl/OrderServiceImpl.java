@@ -19,25 +19,24 @@ import com.wch.gulimall.order.feign.MemberFeignService;
 import com.wch.gulimall.order.feign.ProductFeignService;
 import com.wch.gulimall.order.feign.WaresFeignService;
 import com.wch.gulimall.order.interceptor.LoginUserInterceptor;
+import com.wch.gulimall.order.service.OrderItemService;
 import com.wch.gulimall.order.service.OrderService;
 import com.wch.gulimall.order.to.MemberAddressTo;
 import com.wch.gulimall.order.to.OrderCreateTo;
-import com.wch.gulimall.order.to.OrderItemVo;
+import com.wch.gulimall.order.vo.OrderItemVo;
 import com.wch.gulimall.order.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -68,6 +67,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     @Autowired
     private ProductFeignService productFeignService;
+
+    @Autowired
+    private OrderDao orderDao;
+
+    @Autowired
+    private OrderItemService orderItemService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -135,10 +140,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
      * @param orderSubmitVo
      * @return
      */
+    @Transactional
     @Override
     public OrderSubmitResponseVo submitOrder(OrderSubmitVo orderSubmitVo) {
         orderSubmitVoThreadLocal.set(orderSubmitVo);
         OrderSubmitResponseVo orderSubmitResponseVo = new OrderSubmitResponseVo();
+        orderSubmitResponseVo.setCode(0);
         MemberEntityTo memberEntityTo = LoginUserInterceptor.loginUser.get();
         //创建订单，验证令牌，验证价格，锁库存
         //验证令牌,对比和删除令牌的操作必须保证原子性
@@ -168,14 +175,50 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             BigDecimal payAmount = order.getOrder().getPayAmount();
             //前台的提交的应付金额
             BigDecimal payPrice = orderSubmitVo.getPayPrice();
-            if (Math.abs(payAmount.subtract(payPrice).doubleValue())<0.01) {
+            if (Math.abs(payAmount.subtract(payPrice).doubleValue()) < 0.01) {
                 //金额对比
-            }else {
-                orderSubmitResponseVo.setCode(1);
+                //保存订单
+                saveOrder(order);
+                //库存锁定, 只要有异常，回滚订单数据
+                WareLockVo wareLockVo = new WareLockVo();
+                wareLockVo.setOrderSn(order.getOrder().getOrderSn());
+                List<OrderItemVo> collect = order.getOrderItemEntities().stream().map(item -> {
+                    OrderItemVo orderItemVo = new OrderItemVo();
+                    orderItemVo.setSkuId(item.getSkuId());
+                    orderItemVo.setCount(item.getSkuQuantity());
+                    orderItemVo.setTitle(item.getSkuName());
+                    return orderItemVo;
+                }).collect(Collectors.toList());
+                wareLockVo.setLocks(collect);
+                R r = waresFeignService.orderWareLock(wareLockVo);
+                if (r.getCode() == 0) {
+                    //锁定库存成功
+                    orderSubmitResponseVo.setOrder(order.getOrder());
+                } else {
+                    String message = (String) r.get("msg");
+                    orderSubmitResponseVo.setCode(3);
+                }
+                return orderSubmitResponseVo;
+
+            } else {
+                orderSubmitResponseVo.setCode(2);
                 return orderSubmitResponseVo;
             }
         }
-        return orderSubmitResponseVo;
+    }
+
+    /**
+     * 保存订单
+     *
+     * @param order
+     */
+    private void saveOrder(OrderCreateTo order) {
+        OrderEntity orderEntity = order.getOrder();
+        orderEntity.setModifyTime(new Date());
+        orderDao.insert(orderEntity);
+        List<OrderItemEntity> orderItemEntities = order.getOrderItemEntities();
+        orderItemService.saveBatch(orderItemEntities);
+
     }
 
     /**
@@ -194,6 +237,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
         //验价
         computePrice(orderEntity, orderItemEntities);
+        orderCreateTo.setOrder(orderEntity);
+        orderCreateTo.setOrderItemEntities(orderItemEntities);
         return orderCreateTo;
     }
 
@@ -232,10 +277,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
      * @param orderSn
      */
     private OrderEntity buildOrder(String orderSn) {
+        Long id = LoginUserInterceptor.loginUser.get().getId();
         OrderSubmitVo orderSubmitVo = orderSubmitVoThreadLocal.get();
         OrderEntity orderEntity = new OrderEntity();
         orderEntity.setOrderSn(orderSn);
-
+        orderEntity.setMemberId(id);
         //获取收获地址信息
         R r = waresFeignService.getFare(orderSubmitVo.getAddrId());
         FareVo fareData = r.getData(new TypeReference<FareVo>() {
@@ -243,6 +289,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         BigDecimal fare = fareData.getFare();
         orderEntity.setFreightAmount(fare);
         orderEntity.setReceiverDetailAddress(fareData.getAddress().getDetailAddress());
+        orderEntity.setMemberUsername(fareData.getAddress().getName());
         orderEntity.setReceiverCity(fareData.getAddress().getCity());
         orderEntity.setReceiverName(fareData.getAddress().getName());
         orderEntity.setReceiverPhone(fareData.getAddress().getPhone());

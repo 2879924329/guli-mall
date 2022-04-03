@@ -15,8 +15,16 @@
     <update id="addStock">
         update wms_ware_sku set stock = stock + #{skuNum} where sku_id = #{skuId} and ware_id = #{wareId}
     </update>
+    <update id="lockSkuStock">
+        update wms_ware_sku set stock_locked = stock_locked + #{num}
+        where sku_id = #{skuId} and  ware_id = #{wareId} and stock - stock_locked >= #{num}
+    </update>
     <select id="getSkuStock" resultType="java.lang.Long">
         select sum(stock - stock_locked) from wms_ware_sku where sku_id = #{skuId}
+    </select>
+    <select id="listWareIdHasStock" resultType="java.lang.Long">
+        select ware_id from wms_ware_sku
+        where sku_id = #{skuId} and stock - wms_ware_sku.stock_locked >0
     </select>
 
 

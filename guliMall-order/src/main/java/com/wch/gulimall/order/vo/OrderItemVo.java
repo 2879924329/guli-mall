@@ -1,4 +1,4 @@
-package com.wch.gulimall.order.to;
+package com.wch.gulimall.order.vo;
 
 import lombok.Data;
 

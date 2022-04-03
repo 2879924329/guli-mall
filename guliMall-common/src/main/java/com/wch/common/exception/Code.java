@@ -19,7 +19,8 @@ public enum Code {
     USER_EXIST_EXCEPTION(15001, "用户已存在"),
     PHONE_EXIST_EXCEPTION(15002, "号码已存在"),
    CODE_CACHE_EXISTS(10002, "请勿重复点击发送验证码"),
-    LOGIN_ACCOUNT_PASSWORD_INVALID_EXCEPTION(15003, "账号或密码错误");
+    LOGIN_ACCOUNT_PASSWORD_INVALID_EXCEPTION(15003, "账号或密码错误"),
+    NO_STOCK_EXCEPTION(21000, "商品库存不足");
     private int code;
     private String message;
 
