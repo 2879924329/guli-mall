@@ -26,6 +26,14 @@ import java.util.HashMap;
  *  1)引入spring-boot-starter-aop:引入了aspectjweaver
  *  2）@EnableAspectJAutoProxy(exposeProxy = true), 开启aspectj动态代理功能， 以后的所有的动态代理都是aspectj创建的（即使木有接口也可以创建动态代理）
  *  3）本类用代理对象互调
+ *
+ * Seata来控制分布式事务，
+ *  1）每一个微服务必须创建undo_log表
+ *  2）安装事务协调器：https://github.com/seata/seata/releases
+ *  3）整合
+ *     导入依赖：spring-cloud-starter-alibaba-seata
+ *     。。。（高并发业务不用SeaTa）
+ *
  */
 @EnableAspectJAutoProxy(exposeProxy = true)
 @EnableRedisHttpSession

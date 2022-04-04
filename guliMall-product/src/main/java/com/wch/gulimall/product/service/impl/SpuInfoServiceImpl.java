@@ -92,6 +92,8 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
      * 保存spu各种前端的属性
      *
      * @param spuInfoVo
+     *
+     * 事务可以使用seata的AT模式（不适合高并发）来控制
      */
     @Transactional(rollbackFor = Exception.class)
     @Override

@@ -139,6 +139,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
      *
      * @param orderSubmitVo
      * @return
+     *
+     * 为了保证高并发，
      */
     @Transactional
     @Override
