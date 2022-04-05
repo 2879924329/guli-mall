@@ -1,5 +1,6 @@
 package com.wch.gulimall.warehouse.config;
 
+import com.wch.common.constant.mq.StockMQConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -34,34 +35,34 @@ public class RabbitConfig {
 
     @Bean
     public Exchange stockEventExchange(){
-        return new TopicExchange("stock-event-exchange", true, false);
+        return new TopicExchange(StockMQConstant.STOCK_EVENT_EXCHANGE, true, false);
     }
     @Bean
     public Queue stockReleaseQueue(){
-        return new Queue("stock.release.stock.queue", true, false, false);
+        return new Queue(StockMQConstant.STOCK_RELEASE_STOCK_QUEUE, true, false, false);
     }
     @Bean
     public Queue stockDelayQueue(){
         HashMap<String, Object> argumentsMap = new HashMap<>();
-        argumentsMap.put("x-dead-letter-exchange", "stock-event-exchange");
+        argumentsMap.put("x-dead-letter-exchange", StockMQConstant.STOCK_EVENT_EXCHANGE);
         argumentsMap.put("x-dead-letter-routing-key", "stock.release");
         //测试期间2分钟
         argumentsMap.put("x-message-ttl", 120000);
-        return new Queue("stock.delay.queue", true, false, false, argumentsMap);
+        return new Queue(StockMQConstant.STOCK_DELAY_QUEUE, true, false, false, argumentsMap);
     }
     @Bean
     public Binding stockLockedBinding() {
         // Binding(String destination, Binding.DestinationType destinationType, String exchange, String routingKey, @Nullable Map<String, Object> arguments) {
-        return new Binding("stock.delay.queue", Binding.DestinationType.QUEUE,
-                "stock-event-exchange",
-                "stock.locked", null);
+        return new Binding(StockMQConstant.STOCK_DELAY_QUEUE, Binding.DestinationType.QUEUE,
+                StockMQConstant.STOCK_EVENT_EXCHANGE,
+                StockMQConstant.STOCK_LOCKED_ROUTE_KEY, null);
     }
 
     @Bean
     public Binding stockReleaseBinding() {
-        return new Binding("stock.release.stock.queue", Binding.DestinationType.QUEUE,
-                "stock-event-exchange",
-                "stock.release.#", null);
+        return new Binding(StockMQConstant.STOCK_RELEASE_STOCK_QUEUE, Binding.DestinationType.QUEUE,
+                StockMQConstant.STOCK_EVENT_EXCHANGE,
+                StockMQConstant.STOCK_RELEASE_ROUTE_KEY, null);
     }
 
 
@@ -69,7 +70,7 @@ public class RabbitConfig {
      * 第一次连山rabbitmq时才会创建队列，交换机等
      * @param message
      */
-    @RabbitListener(queues = "stock.release.stock.queue")
+   // @RabbitListener(queues = "stock.release.stock.queue")
     public void handle(Message message){
 
     }

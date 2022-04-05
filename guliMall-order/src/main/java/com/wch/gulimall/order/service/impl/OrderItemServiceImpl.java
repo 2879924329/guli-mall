@@ -21,7 +21,7 @@ import com.wch.gulimall.order.dao.OrderItemDao;
 import com.wch.gulimall.order.entity.OrderItemEntity;
 import com.wch.gulimall.order.service.OrderItemService;
 
-@RabbitListener(queues = {"hello-java-queue"})
+//@RabbitListener(queues = {"hello-java-queue"})
 @Service("orderItemService")
 public class OrderItemServiceImpl extends ServiceImpl<OrderItemDao, OrderItemEntity> implements OrderItemService {
 
@@ -51,7 +51,7 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemDao, OrderItemEnt
      *   2）只有一个消息完全处理完，方法运行结束，歪蜜就可以接收下一个消息
      */
     //@RabbitListener(queues = {"hello-java-queue"})
-    @RabbitHandler
+    //@RabbitHandler
     public void receiveMsg(Message message, OrderReturnReasonEntity returnReasonEntity,
                            Channel channel) throws InterruptedException {
         //消息体：Body:'{"id":1,"name":"hhha","sort":3,"status":1,"createTime":1648476351496}'
@@ -75,7 +75,7 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemDao, OrderItemEnt
         }
     }
 
-    @RabbitHandler
+   // @RabbitHandler
     public void receiveMsg(OrderEntity order)  {
         System.out.println("接收到的消息内容：" + order);
     }

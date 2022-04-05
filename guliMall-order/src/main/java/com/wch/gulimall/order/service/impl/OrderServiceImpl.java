@@ -13,7 +13,7 @@ import com.wch.common.utils.R;
 import com.wch.gulimall.order.dao.OrderDao;
 import com.wch.gulimall.order.entity.OrderEntity;
 import com.wch.gulimall.order.entity.OrderItemEntity;
-import com.wch.gulimall.order.enume.OrderStatusEnum;
+import com.wch.common.enume.OrderStatusEnum;
 import com.wch.gulimall.order.feign.CartFeignService;
 import com.wch.gulimall.order.feign.MemberFeignService;
 import com.wch.gulimall.order.feign.ProductFeignService;
@@ -197,9 +197,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                     //锁定库存成功
                     orderSubmitResponseVo.setOrder(order.getOrder());
                 } else {
-                    String message = (String) r.get("msg");
                     orderSubmitResponseVo.setCode(3);
                 }
+
                 return orderSubmitResponseVo;
 
             } else {
@@ -207,6 +207,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 return orderSubmitResponseVo;
             }
         }
+    }
+
+    @Override
+    public OrderEntity getOrderStatusByOrderSn(String orderSn) {
+        return baseMapper.selectOne(new QueryWrapper<OrderEntity>().eq("order_sn", orderSn));
     }
 
     /**

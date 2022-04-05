@@ -3,6 +3,7 @@ package com.wch.gulimall.order.interceptor;
 import com.wch.common.constant.AuthServerConstant;
 import com.wch.common.to.MemberEntityTo;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -20,6 +21,14 @@ public class LoginUserInterceptor implements HandlerInterceptor {
     public static ThreadLocal<MemberEntityTo> loginUser = new ThreadLocal<>();
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
+        String requestURI = request.getRequestURI();
+        //如果是请求的路径是当前路径，直接放行
+        boolean match = new AntPathMatcher().match("/order/order/status/**", requestURI);
+        if (match){
+            return true;
+        }
+
         MemberEntityTo attribute = (MemberEntityTo) request.getSession().getAttribute(AuthServerConstant.LOGIN_USER);
         if (!StringUtils.isEmpty(attribute)){
             loginUser.set(attribute);

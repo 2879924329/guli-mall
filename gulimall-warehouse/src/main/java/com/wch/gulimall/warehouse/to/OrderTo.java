@@ -1,30 +1,21 @@
-package com.wch.gulimall.order.entity;
-
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-
-import java.math.BigDecimal;
-import java.io.Serializable;
-import java.util.Date;
+package com.wch.gulimall.warehouse.to;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 /**
- * 订单
- *
  * @author wch
- * @email 2879924329@qq.com
- * @date 2022-02-20 22:14:34
+ * @version 1.0
+ * @date 2022/4/5 20:45
  */
 @Data
-@TableName("oms_order")
-public class OrderEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class OrderTo {
     /**
      * id
      */
-    @TableId
+
     private Long id;
     /**
      * member_id

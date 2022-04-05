@@ -25,6 +25,9 @@ spring:
     host: 192.168.84.88
     port: 5672
     virtual-host: /
+    listener:
+      simple:
+        acknowledge-mode: manual
 
 mybatis-plus:
   mapperLocations: classpath:mapper/**/*.xml

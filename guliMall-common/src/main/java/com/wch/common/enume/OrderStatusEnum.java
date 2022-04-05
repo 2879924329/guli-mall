@@ -1,4 +1,4 @@
-package com.wch.gulimall.order.enume;
+package com.wch.common.enume;
 
 public enum  OrderStatusEnum {
     CREATE_NEW(0,"待付款"),
