@@ -1,5 +1,6 @@
 package com.wch.gulimall.warehouse.dao;
 
+import com.wch.common.to.mq.OrderEntityTo;
 import com.wch.gulimall.warehouse.entity.WareOrderTaskEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -13,5 +14,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface WareOrderTaskDao extends BaseMapper<WareOrderTaskEntity> {
-	
+;
 }

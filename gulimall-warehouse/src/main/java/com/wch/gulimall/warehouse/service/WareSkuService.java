@@ -1,6 +1,7 @@
 package com.wch.gulimall.warehouse.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.wch.common.to.mq.OrderEntityTo;
 import com.wch.common.to.mq.StockLockedTo;
 import com.wch.common.utils.PageUtils;
 import com.wch.gulimall.warehouse.entity.WareSkuEntity;
@@ -30,5 +31,7 @@ public interface WareSkuService extends IService<WareSkuEntity> {
 
 
     void unLockStock(StockLockedTo stockLockedTo);
+
+    void unLockStock(OrderEntityTo orderEntityTo);
 }
 

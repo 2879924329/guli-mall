@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wch.common.constant.OrderConstant;
+import com.wch.common.constant.mq.OrderMQConstant;
 import com.wch.common.to.MemberEntityTo;
+import com.wch.common.to.mq.OrderEntityTo;
 import com.wch.common.utils.PageUtils;
 import com.wch.common.utils.Query;
 import com.wch.common.utils.R;
@@ -25,6 +27,8 @@ import com.wch.gulimall.order.to.MemberAddressTo;
 import com.wch.gulimall.order.to.OrderCreateTo;
 import com.wch.gulimall.order.vo.OrderItemVo;
 import com.wch.gulimall.order.vo.*;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -73,6 +77,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     @Autowired
     private OrderItemService orderItemService;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -199,7 +206,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 } else {
                     orderSubmitResponseVo.setCode(3);
                 }
-
+                //订单创建成功就发消息给mq
+                rabbitTemplate.convertAndSend(OrderMQConstant.ORDER_EVENT_EXCHANGE,OrderMQConstant.ORDER_CREATE_ORDER_ROUTE_KRY,order.getOrder());
                 return orderSubmitResponseVo;
 
             } else {
@@ -212,6 +220,34 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     @Override
     public OrderEntity getOrderStatusByOrderSn(String orderSn) {
         return baseMapper.selectOne(new QueryWrapper<OrderEntity>().eq("order_sn", orderSn));
+    }
+
+    /**
+     * 过期关单
+     * @param order order
+     */
+    @Override
+    public void closeOrder(OrderEntity order) {
+       //查询当前订单的最新状态
+        OrderEntity entity = this.getById(order.getId());
+        if (OrderStatusEnum.CREATE_NEW.getCode().equals(entity.getStatus())){
+            OrderEntity orderEntity = new OrderEntity();
+            orderEntity.setId(order.getId());
+            orderEntity.setStatus(OrderStatusEnum.CANCLED.getCode());
+            this.updateById(orderEntity);
+            //给库存服务的mq发送消息
+            OrderEntityTo orderEntityTo = new OrderEntityTo();
+            BeanUtils.copyProperties(entity, orderEntityTo);
+            try {
+                //保证消息一定发送出去，保证消息的不丢失，每一个消息都可以做好日志记录（给数据库保存每一个消息的详细信息）
+                //定期扫描数据库，将没发送出去的信息重新发送
+                rabbitTemplate.convertAndSend(OrderMQConstant.ORDER_EVENT_EXCHANGE, OrderMQConstant.ORDER_RELEASE_OTHER_ROUTE_KEY,orderEntityTo);
+            }catch (Exception e){
+                //将没发送成功的消息尝试重新发送
+
+            }
+
+        }
     }
 
     /**

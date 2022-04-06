@@ -73,6 +73,8 @@ public class RabbitConfig {
              */
             @Override
             public void confirm(CorrelationData correlationData, boolean b, String s) {
+                //服务器收到消息
+                //做好消息确认机制，生产方，消费方手动确认，每一个发生的消息都子啊数据库做好记录，定期将失败的消息再次发送
                log.warn("confirm...{}， ack: {}, 失败原因：{}", correlationData, b, s);
             }
         });
@@ -91,6 +93,7 @@ public class RabbitConfig {
              */
             @Override
             public void returnedMessage(Message message, int i, String s, String s1, String s2) {
+               //报错了，修改数据库，把消息的状态变成错误
                 log.warn("message: {}, code: {}, replayText: {} exchange: {}, routeKey: {}", message, i, s, s1, s2);
             }
         });

@@ -27,7 +27,6 @@ public class WareOrderTaskDetailEntity implements Serializable {
 	/**
 	 * id
 	 */
-	@TableId
 	private Long id;
 	/**
 	 * sku_id

@@ -5,6 +5,7 @@ import com.rabbitmq.client.Channel;
 import com.sun.org.apache.xerces.internal.impl.dtd.models.DFAContentModel;
 import com.wch.common.constant.mq.StockMQConstant;
 import com.wch.common.enume.OrderStatusEnum;
+import com.wch.common.to.mq.OrderEntityTo;
 import com.wch.common.to.mq.StockDetailTo;
 import com.wch.common.to.mq.StockLockedTo;
 import com.wch.common.utils.R;
@@ -12,15 +13,15 @@ import com.wch.gulimall.warehouse.entity.WareOrderTaskDetailEntity;
 import com.wch.gulimall.warehouse.entity.WareOrderTaskEntity;
 import com.wch.gulimall.warehouse.service.WareSkuService;
 import com.wch.gulimall.warehouse.to.OrderTo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
+import java.time.temporal.Temporal;
 
 /**
  * @author wch
@@ -29,6 +30,7 @@ import java.io.IOException;
  *
  * 监听队列，处理消息
  */
+@Slf4j
 @Service
 @RabbitListener(queues = StockMQConstant.STOCK_RELEASE_STOCK_QUEUE)
 public class StockListener {
@@ -45,11 +47,23 @@ public class StockListener {
      */
     @RabbitHandler
     private void releaseLockedStock(StockLockedTo stockLockedTo, Message message, Channel channel) throws IOException {
-        System.out.println("收到解锁库存消息");
+        log.warn("收到解锁库存消息");
         try {
             wareSkuService.unLockStock(stockLockedTo);
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e) {
+            //回队
+            channel.basicReject(message.getMessageProperties().getDeliveryTag(), true);
+        }
+    }
+
+    @RabbitHandler
+    public void handleOrderClose(OrderEntityTo orderEntityTo, Message message, Channel channel) throws IOException {
+        log.warn("订单关闭，准备解锁库存");
+        try {
+            wareSkuService.unLockStock(orderEntityTo);
+            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+        }catch (Exception e){
             //回队
             channel.basicReject(message.getMessageProperties().getDeliveryTag(), true);
         }

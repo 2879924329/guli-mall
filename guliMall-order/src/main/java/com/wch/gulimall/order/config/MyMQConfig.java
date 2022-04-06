@@ -1,6 +1,8 @@
 package com.wch.gulimall.order.config;
 
 import com.rabbitmq.client.Channel;
+import com.wch.common.constant.mq.OrderMQConstant;
+import com.wch.common.constant.mq.StockMQConstant;
 import com.wch.gulimall.order.entity.OrderEntity;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -58,11 +60,16 @@ public class MyMQConfig {
                 "order.release.order", null);
     }
 
+    /**
+     * 订单释放直接和库存释放绑定
+     * @return
+     */
+   @Bean
+    public Binding orderReleaseOther(){
+       return new Binding(StockMQConstant.STOCK_RELEASE_STOCK_QUEUE, Binding.DestinationType.QUEUE,
+               OrderMQConstant.ORDER_EVENT_EXCHANGE,
+               OrderMQConstant.ORDER_RELEASE_OTHER_ROUTE_KEY, null);
+   }
 
-    @RabbitListener(queues = "order.release.order.queue")
-    public void listener(OrderEntity order, Channel channel, Message message) throws IOException {
-        System.out.println("收到过期订单信息，准备关闭订单"+order.getOrderSn());
-        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-    }
 
 }
