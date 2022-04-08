@@ -39,7 +39,19 @@ mybatis-plus:
     db-config:
       #调整主键自增
       id-type: auto
+
+
+ #支付宝支付
+alipay:
+  app_id: 2021000119659403
+  notify_url: http://xb6cg22x28.52http.net/order/pay/alipay/success
+  return_url: http://member.guli-mall.com/member-order.html
+  sign_type: RSA2
+  charset: utf-8
+  gatewayUrl: https://openapi.alipaydev.com/gateway.do
+
 #ribbon的超时时间
 ribbon:
   ReadTimeout: 30000
   ConnectTimeout: 30000
+

@@ -19,6 +19,6 @@ public interface CouponFeignService {
      * @return
      */
     @RequestMapping("/coupon/coupon/member/list")
-    public R getMemberCoupons();
+    R getMemberCoupons();
 
 }

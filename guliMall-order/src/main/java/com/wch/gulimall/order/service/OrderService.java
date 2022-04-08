@@ -6,6 +6,7 @@ import com.wch.gulimall.order.entity.OrderEntity;
 import com.wch.gulimall.order.vo.OrderConfirmVo;
 import com.wch.gulimall.order.vo.OrderSubmitResponseVo;
 import com.wch.gulimall.order.vo.OrderSubmitVo;
+import com.wch.gulimall.order.vo.PayVo;
 
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -28,5 +29,9 @@ public interface OrderService extends IService<OrderEntity> {
     OrderEntity getOrderStatusByOrderSn(String orderSn);
 
     void closeOrder(OrderEntity order);
+
+    PayVo getOrderPayInfo(String orderSn);
+
+    PageUtils queryOrderListPage(Map<String, Object> params);
 }
 

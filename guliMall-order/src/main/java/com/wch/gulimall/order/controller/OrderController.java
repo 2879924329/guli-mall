@@ -36,9 +36,18 @@ public class OrderController {
      * 列表
      */
     @RequestMapping("/list")
-   // @RequiresPermissions("order:order:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = orderService.queryPage(params);
+
+        return R.ok().put("page", page);
+    }
+
+    /**
+     * 查询当前用户的所有订单列表
+     */
+    @PostMapping("/order-list")
+    public R getOrderList(@RequestBody Map<String, Object> params){
+        PageUtils page = orderService.queryOrderListPage(params);
 
         return R.ok().put("page", page);
     }

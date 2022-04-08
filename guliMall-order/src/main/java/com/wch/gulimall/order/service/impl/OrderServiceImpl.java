@@ -40,6 +40,7 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -196,6 +197,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                     orderItemVo.setSkuId(item.getSkuId());
                     orderItemVo.setCount(item.getSkuQuantity());
                     orderItemVo.setTitle(item.getSkuName());
+                    orderItemVo.setImage(item.getSkuPic());
                     return orderItemVo;
                 }).collect(Collectors.toList());
                 wareLockVo.setLocks(collect);
@@ -248,6 +250,46 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             }
 
         }
+    }
+
+    /**
+     * 获取当前订单的支付信息
+     * @param orderSn
+     * @return
+     */
+    @Override
+    public PayVo getOrderPayInfo(String orderSn) {
+        PayVo payVo = new PayVo();
+        List<OrderItemEntity> orderItemEntities = orderItemService.list(new QueryWrapper<OrderItemEntity>().eq("order_sn", orderSn));
+        OrderEntity orderEntity = this.getOrderStatusByOrderSn(orderSn);
+        String payAmount = orderEntity.getTotalAmount().setScale(2, RoundingMode.UP).toString();
+        payVo.setTotal_amount(payAmount);
+        payVo.setSubject(orderItemEntities.get(0).getSkuName());
+        payVo.setBody(orderItemEntities.get(0).getSkuAttrsVals());
+        payVo.setOut_trade_no(orderEntity.getOrderSn());
+        return payVo;
+    }
+
+    /**
+     * 查询订单列表
+     * @param params
+     * @return
+     */
+    @Override
+    public PageUtils queryOrderListPage(Map<String, Object> params) {
+        MemberEntityTo memberEntityTo = LoginUserInterceptor.loginUser.get();
+        IPage<OrderEntity> page = this.page(
+                new Query<OrderEntity>().getPage(params),
+                new QueryWrapper<OrderEntity>().eq("member_id", memberEntityTo.getId()).orderByDesc("id")
+        );
+        List<OrderEntity> records = page.getRecords();
+        List<OrderEntity> orderEntityList = records.stream().map(record -> {
+            List<OrderItemEntity> orderItemEntityList = orderItemService.list(new QueryWrapper<OrderItemEntity>().eq("order_sn", record.getOrderSn()));
+            record.setOrderItemEntities(orderItemEntityList);
+            return record;
+        }).collect(Collectors.toList());
+        page.setRecords(orderEntityList);
+        return new PageUtils(page);
     }
 
     /**
@@ -384,6 +426,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         orderItemEntity.setSpuName(spuInfoVo.getSpuName());
         orderItemEntity.setCategoryId(spuInfoVo.getCatalogId());
         //商品的sku信息
+        orderItemEntity.setSkuPic(cartItem.getImage());
         orderItemEntity.setSkuId(cartItem.getSkuId());
         orderItemEntity.setSkuName(cartItem.getTitle());
         orderItemEntity.setSkuPrice(cartItem.getPrice());
