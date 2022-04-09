@@ -40,8 +40,6 @@ public class PayOrderController {
     public String payOrder(@RequestParam("orderSn") String orderSn) throws AlipayApiException {
         //获取支付信息
         PayVo payVo = orderService.getOrderPayInfo(orderSn);
-        String pay = alipayTemplate.pay(payVo);
-        log.info("支付信息：{}",pay);
-        return pay;
+        return alipayTemplate.pay(payVo);
     }
 }

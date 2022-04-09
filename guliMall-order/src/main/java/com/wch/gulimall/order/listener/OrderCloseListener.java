@@ -9,7 +9,6 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -28,9 +27,10 @@ public class OrderCloseListener {
     private OrderService orderService;
     @RabbitHandler
     public void listener(OrderEntity order, Channel channel, Message message) throws IOException {
-       log.warn("收到过期订单信息，准备关闭订单{}",order.getOrderSn());
         try {
+            log.warn("收到过期订单信息，准备关闭订单{}",order.getOrderSn());
             orderService.closeOrder(order);
+
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         }catch (Exception e){
             //归队

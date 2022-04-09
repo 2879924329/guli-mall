@@ -7,15 +7,18 @@ import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wch.common.constant.OrderConstant;
 import com.wch.common.constant.mq.OrderMQConstant;
+import com.wch.common.enume.TradeStatus;
 import com.wch.common.to.MemberEntityTo;
 import com.wch.common.to.mq.OrderEntityTo;
 import com.wch.common.utils.PageUtils;
 import com.wch.common.utils.Query;
 import com.wch.common.utils.R;
+import com.wch.gulimall.order.config.AlipayTemplate;
 import com.wch.gulimall.order.dao.OrderDao;
 import com.wch.gulimall.order.entity.OrderEntity;
 import com.wch.gulimall.order.entity.OrderItemEntity;
 import com.wch.common.enume.OrderStatusEnum;
+import com.wch.gulimall.order.entity.PaymentInfoEntity;
 import com.wch.gulimall.order.feign.CartFeignService;
 import com.wch.gulimall.order.feign.MemberFeignService;
 import com.wch.gulimall.order.feign.ProductFeignService;
@@ -23,10 +26,12 @@ import com.wch.gulimall.order.feign.WaresFeignService;
 import com.wch.gulimall.order.interceptor.LoginUserInterceptor;
 import com.wch.gulimall.order.service.OrderItemService;
 import com.wch.gulimall.order.service.OrderService;
+import com.wch.gulimall.order.service.PaymentInfoService;
 import com.wch.gulimall.order.to.MemberAddressTo;
 import com.wch.gulimall.order.to.OrderCreateTo;
 import com.wch.gulimall.order.vo.OrderItemVo;
 import com.wch.gulimall.order.vo.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +44,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -48,7 +54,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-
+@Slf4j
 @Service("orderService")
 public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> implements OrderService {
 
@@ -81,6 +87,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private PaymentInfoService paymentInfoService;
+
+    @Autowired
+    private AlipayTemplate alipayTemplate;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -146,9 +158,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
      * 提交订单
      *
      * @param orderSubmitVo
-     * @return
-     *
-     * 为了保证高并发，
+     * @return 为了保证高并发，
      */
     @Transactional
     @Override
@@ -209,7 +219,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                     orderSubmitResponseVo.setCode(3);
                 }
                 //订单创建成功就发消息给mq
-                rabbitTemplate.convertAndSend(OrderMQConstant.ORDER_EVENT_EXCHANGE,OrderMQConstant.ORDER_CREATE_ORDER_ROUTE_KRY,order.getOrder());
+                rabbitTemplate.convertAndSend(OrderMQConstant.ORDER_EVENT_EXCHANGE, OrderMQConstant.ORDER_CREATE_ORDER_ROUTE_KRY, order.getOrder());
                 return orderSubmitResponseVo;
 
             } else {
@@ -226,13 +236,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     /**
      * 过期关单
+     *
      * @param order order
      */
     @Override
     public void closeOrder(OrderEntity order) {
-       //查询当前订单的最新状态
+        //查询当前订单的最新状态
         OrderEntity entity = this.getById(order.getId());
-        if (OrderStatusEnum.CREATE_NEW.getCode().equals(entity.getStatus())){
+        if (OrderStatusEnum.CREATE_NEW.getCode().equals(entity.getStatus())) {
             OrderEntity orderEntity = new OrderEntity();
             orderEntity.setId(order.getId());
             orderEntity.setStatus(OrderStatusEnum.CANCLED.getCode());
@@ -243,17 +254,16 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             try {
                 //保证消息一定发送出去，保证消息的不丢失，每一个消息都可以做好日志记录（给数据库保存每一个消息的详细信息）
                 //定期扫描数据库，将没发送出去的信息重新发送
-                rabbitTemplate.convertAndSend(OrderMQConstant.ORDER_EVENT_EXCHANGE, OrderMQConstant.ORDER_RELEASE_OTHER_ROUTE_KEY,orderEntityTo);
-            }catch (Exception e){
+                rabbitTemplate.convertAndSend(OrderMQConstant.ORDER_EVENT_EXCHANGE, OrderMQConstant.ORDER_RELEASE_OTHER_ROUTE_KEY, orderEntityTo);
+            } catch (Exception e) {
                 //将没发送成功的消息尝试重新发送
-
             }
-
         }
     }
 
     /**
      * 获取当前订单的支付信息
+     *
      * @param orderSn
      * @return
      */
@@ -272,6 +282,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     /**
      * 查询订单列表
+     *
      * @param params
      * @return
      */
@@ -291,6 +302,51 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         page.setRecords(orderEntityList);
         return new PageUtils(page);
     }
+
+    /**
+     * 处理支付宝的支付结果
+     *
+     * @param payAsyncVo
+     * @param request
+     * @return
+     */
+    @Override
+    public String handlePayResult(PayAsyncVo payAsyncVo, HttpServletRequest request) {
+        boolean verified;
+        // 1.验签
+        try {
+            verified = alipayTemplate.signVerify(request);
+        } catch (Exception e) {
+            log.warn("阿里支付异步通知验签失败");
+            return "error";
+        }
+        // 验签失败
+        if (!verified) {
+            log.warn("阿里支付异步通知验签失败");
+            return "error";
+        }
+        log.info("签名验证成功！准备修改订单状态和保存交易流水信息");
+        //保存交易流水信息
+        PaymentInfoEntity paymentInfoEntity = new PaymentInfoEntity();
+        paymentInfoEntity.setAlipayTradeNo(payAsyncVo.getTrade_no());
+        paymentInfoEntity.setOrderSn(payAsyncVo.getOut_trade_no());
+        paymentInfoEntity.setPaymentStatus(payAsyncVo.getTrade_status());
+        paymentInfoEntity.setCallbackTime(payAsyncVo.getNotify_time());
+        paymentInfoService.save(paymentInfoEntity);
+
+        //修改订单状态信息
+        if (TradeStatus.TRADE_SUCCESS.equals(payAsyncVo.getTrade_status()) || TradeStatus.TRADE_FINISHED.equals(payAsyncVo.getTrade_status())) {
+            //支付成功
+            String outTradeNo = payAsyncVo.getOut_trade_no();
+            this.updateOrderStatus(outTradeNo, OrderStatusEnum.PAYED.getCode());
+        }
+        return "success";
+    }
+
+    private void updateOrderStatus(String outTradeNo, Integer code) {
+        baseMapper.updateOrderStatus(outTradeNo, code);
+    }
+
 
     /**
      * 保存订单

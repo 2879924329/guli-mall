@@ -24,8 +24,11 @@ public class LoginUserInterceptor implements HandlerInterceptor {
 
         String requestURI = request.getRequestURI();
         //如果是请求的路径是当前路径，直接放行
-        boolean match = new AntPathMatcher().match("/order/order/status/**", requestURI);
-        if (match){
+        AntPathMatcher antPathMatcher = new AntPathMatcher();
+        boolean match = antPathMatcher.match("/order/order/status/**", requestURI);
+        //支付宝回调通知放行
+        boolean match1 = antPathMatcher.match("/order/alipay/success", requestURI);
+        if (match || match1){
             return true;
         }
 
