@@ -44,6 +44,7 @@ public class SecondKillServiceImpl implements SecondKillService {
             // 1,缓存活动信息
             saveSessionTo(data);
             //2，缓存关联的商品信息
+            saveSessionInfo(data);
         }
     }
 
