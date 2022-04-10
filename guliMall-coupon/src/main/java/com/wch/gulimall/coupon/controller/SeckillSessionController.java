@@ -1,14 +1,13 @@
 package com.wch.gulimall.coupon.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.*;
 
 import com.wch.gulimall.coupon.entity.SeckillSessionEntity;
 import com.wch.gulimall.coupon.service.SeckillSessionService;
@@ -29,6 +28,12 @@ import com.wch.common.utils.R;
 public class SeckillSessionController {
     @Autowired
     private SeckillSessionService seckillSessionService;
+
+    @GetMapping("/last-there")
+    public R getLastSessions(){
+        List<SeckillSessionEntity> seckillSessionEntities = seckillSessionService.getLastSessions();
+        return R.ok().setData(seckillSessionEntities);
+    }
 
     /**
      * 列表
