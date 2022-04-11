@@ -28,8 +28,8 @@ public class HelloScheduled {
      *
      * 使用异步+定时任务解决定时任务不阻塞
      */
-    @Async
-    @Scheduled(cron = "* * * * * ?")
+    //@Async
+   // @Scheduled(cron = "* * * * * ?")
     public void hello(){
         log.info("hello");
     }

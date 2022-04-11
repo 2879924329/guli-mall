@@ -57,7 +57,10 @@ spring:
           uri: lb://gulimall-search
           predicates:
             - Host=search.guli-mall.com
-
+        - id: gulimall_secondkill
+          uri: lb://gulimall-seckill
+          predicates:
+            - Host=seckill.guli-mall.com
         - id: admin_route
           uri: lb://renren-fast
 

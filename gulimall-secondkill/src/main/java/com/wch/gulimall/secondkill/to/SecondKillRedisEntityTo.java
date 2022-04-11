@@ -15,6 +15,11 @@ public class SecondKillRedisEntityTo {
      * id
      */
     private Long id;
+
+    /**
+     * 秒杀随机码
+     */
+    private String randomCode;
     /**
      * 活动id
      */
@@ -46,4 +51,9 @@ public class SecondKillRedisEntityTo {
 
     //sku的详细信息
     private SkuInfoTo skuInfoTo;
+
+    //秒杀开始时间
+    private Long startTime;
+    //秒杀结束时间
+    private Long endTime;
 }
