@@ -510,7 +510,6 @@
 							<li>
 								<img src="/static/item/img/36860afb69afa241beeb33ae86678093.png"/> 预约剩余
 								<span id="timer">
-
 									</span>
 							</li>
 						</ul>
@@ -523,16 +522,13 @@
 							<span>￥</span>
 							<span th:text="${#numbers.formatDecimal(item.info.price,3,2)}">4499.00</span>
 						</li>
-						<li style="color: red" >
-
-                            <span >
-                                商品将会在进行秒杀
-                            </span>
-
-							<span  >
-                                秒杀价
-                            </span>
-
+						<li style="color: red" th:if="${item.secKillSkuInfoVo != null}">
+							<span th:if="${#dates.createNow().getTime() < item.secKillSkuInfoVo.startTime}">
+								商品将会在[[${#dates.format(new java.util.Date(item.secKillSkuInfoVo.startTime))}]]开始秒杀
+							</span>
+							<span th:if="${#dates.createNow().getTime() >= item.secKillSkuInfoVo.startTime && #dates.createNow().getTime() <= item.secKillSkuInfoVo.endTime}">
+								秒杀价[[${#numbers.formatDecimal(item.secKillSkuInfoVo.seckillPrice,1,2)}]]
+							</span>
 						</li>
 						<li>
 							<a href="/static/item/">

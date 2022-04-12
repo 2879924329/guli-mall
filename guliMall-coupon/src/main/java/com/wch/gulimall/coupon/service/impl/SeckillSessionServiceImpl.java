@@ -69,7 +69,7 @@ public class SeckillSessionServiceImpl extends ServiceImpl<SeckillSessionDao, Se
      * 起始时间
      * @return 2022-04-09 00:00:00
      */
-    private String getStartTime(){
+    private static String getStartTime(){
         LocalDate now = LocalDate.now();
         LocalTime min = LocalTime.MIN;
         return LocalDateTime.of(now, min).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
@@ -79,11 +79,16 @@ public class SeckillSessionServiceImpl extends ServiceImpl<SeckillSessionDao, Se
      * 结束时间
      * @return 2022-04-12 23:59:59
      */
-    private String getEndTime(){
+    private static String getEndTime(){
         LocalDate now = LocalDate.now();
         LocalDate plusDays = now.plusDays(2);
         LocalTime max = LocalTime.MAX;
-        return LocalDateTime.of(plusDays, max).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            return LocalDateTime.of(plusDays, max).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+
+    public static void main(String[] args) {
+        System.out.println(getStartTime());
+        System.out.println(getEndTime());
     }
 
 }

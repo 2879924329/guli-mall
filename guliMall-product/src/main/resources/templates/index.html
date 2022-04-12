@@ -524,7 +524,6 @@
           <div class="swiper-slide">
             <ul id="seckillSkuContent">
 
-
             </ul>
           </div>
           <div class="swiper-slide">
@@ -591,19 +590,25 @@
       window.location.href="http://search.guli-mall.com/list.html?keyword="+keyword;
   }
 
+  function to_href(skuId){
+    location.href="http://item.guli-mall.com/"+skuId +".html"
+  }
+
   $.get("http://seckill.guli-mall.com/current-secondkills", function (response){
     if (response.data.length > 0){
       response.data.forEach(function (item){
-        $("<li></li>")
+        $("<li onclick='to_href("+item.skuId+")'></li>")
                 .append($("<img style='width: 130px;height: 130px' src='"+item.skuInfoTo.skuDefaultImg+"'/>"))
                 .append($("<p>"+item.skuInfoTo.skuName+"</p>"))
                 .append($("<span>"+ item.seckillPrice+"</span>"))
                 .append($("<s>"+ item.skuInfoTo.price+"</s>"))
-                 .appendTo("#seckillSkuContent")
+                .appendTo("#seckillSkuContent")
       })
     }
 
   })
+
+
 
 
 </script>

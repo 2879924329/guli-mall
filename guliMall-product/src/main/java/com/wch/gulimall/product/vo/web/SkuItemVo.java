@@ -1,8 +1,10 @@
 package com.wch.gulimall.product.vo.web;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.wch.gulimall.product.entity.SkuImagesEntity;
 import com.wch.gulimall.product.entity.SkuInfoEntity;
 import com.wch.gulimall.product.entity.SpuInfoDescEntity;
+import com.wch.gulimall.product.vo.SecKillSkuInfoVo;
 import lombok.Data;
 
 import java.util.List;
@@ -33,4 +35,7 @@ public class SkuItemVo {
 
     //5、获取spu的规格参数信息
     private List<SpuItemAttrGroupVo> groupAttrs;
+
+    //当前商品的秒杀优惠信息
+    private SecKillSkuInfoVo secKillSkuInfoVo;
 }

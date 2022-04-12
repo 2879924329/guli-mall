@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -65,6 +66,7 @@ public class SecondKillServiceImpl implements SecondKillService {
         }
     }
 
+
     /**
      * 获取当前可以参与秒杀的商品信息
      * @return
@@ -77,29 +79,75 @@ public class SecondKillServiceImpl implements SecondKillService {
         Set<String> keys = stringRedisTemplate.keys(SECKILL_SESSIONS_PREFIX + "*");
         if (!CollectionUtils.isEmpty(keys)){
             for (String key : keys) {
-                //key:seckill:sessions:1649606400000_1649692800000
+                //key seckill:sessions:1649606400000_1649692800000
                 String replace = key.replace(SECKILL_SESSIONS_PREFIX, "");
                 String[] s = replace.split("_");
                 long startTime = Long.parseLong(s[0]);
                 long endTime = Long.parseLong(s[1]);
                 if (time >= startTime && time <= endTime){
                     //2，获取这个秒杀场次的所有商品信息
-                    List<String> list = stringRedisTemplate.opsForList().range(key, 0, -1);
-                    BoundHashOperations<String, String, String> hashOps = stringRedisTemplate.boundHashOps(SKU_KILL_CACHE_PREFIX);
+                    List<String> list = stringRedisTemplate.opsForList().range(key, -100, 100);
                     if (!CollectionUtils.isEmpty(list)){
-                        List<String> multiGet = hashOps.multiGet(list);
-                        if (!CollectionUtils.isEmpty(multiGet)){
-                            return multiGet.stream().map(item -> {
-                                //当前秒杀开始了，需要随机码
-                                return JSON.parseObject(item, SecondKillRedisEntityTo.class);
-                            }).collect(Collectors.toList());
+                        BoundHashOperations<String, String, String> hashOps = stringRedisTemplate.boundHashOps(SKU_KILL_CACHE_PREFIX);
+                        if (!CollectionUtils.isEmpty(list)){
+                            List<String> multiGet = hashOps.multiGet(list);
+                            if (!CollectionUtils.isEmpty(multiGet)){
+                                return multiGet.stream().map(item -> {
+                                    //当前秒杀开始了，需要随机码
+                                    return JSON.parseObject(item, SecondKillRedisEntityTo.class);
+                                }).collect(Collectors.toList());
+                            }
                         }
-                        break;
                     }
                 }
             }
         }
         return Collections.emptyList();
+    }
+
+    public static void main(String[] args) {
+        System.out.println(System.currentTimeMillis());
+    }
+
+    @Override
+    public SecondKillRedisEntityTo querySecKillSkuInfo(Long skuId) {
+        // 1.匹配查询当前商品的秒杀信息
+        BoundHashOperations<String, String, String> skuOps = stringRedisTemplate.boundHashOps(SKU_KILL_CACHE_PREFIX);
+        // 获取所有商品的key：sessionId-skuId
+        Set<String> keys = skuOps.keys();
+        if (!CollectionUtils.isEmpty(keys)) {
+            String lastIndex = "-" + skuId;
+            for (String key : keys) {
+                //返回此字符串中最后一次出现指定子字符串的索引。
+                // 空字符串“”的最后一次出现被认为出现在索引值 this.length() 处。
+                // 返回的索引是最大值 k 其中： this.startsWith(str, k)
+                // 如果不存在这样的 k 值，则返回 -1。
+                // 参数： str - 要搜索的子字符串。
+                // 返回： 指定子字符串最后一次出现的索引，
+                // 如果没有出现，则返回 -1。
+                if (key.lastIndexOf(lastIndex) > -1) {
+                    // 商品id匹配成功
+                    String jsonString = skuOps.get(key);
+                    // 进行序列化
+                    SecondKillRedisEntityTo skuInfo = JSON.parseObject(jsonString, SecondKillRedisEntityTo.class);
+                    long currentTime = System.currentTimeMillis();
+                    assert skuInfo != null;
+                    Long endTime = skuInfo.getEndTime();
+                    if (currentTime <= endTime) {
+                        // 当前时间小于截止时间
+                        Long startTime = skuInfo.getStartTime();
+                        if (currentTime >= startTime) {
+                            // 返回当前正处于秒杀的商品信息
+                            return skuInfo;
+                        }
+                        // 返回预告信息，不返回随机码
+                        skuInfo.setRandomCode(null);// 随机码
+                        return skuInfo;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     /**
