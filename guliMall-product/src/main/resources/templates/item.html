@@ -674,18 +674,18 @@
 						</div>
 					</div>
 
-					<div class="box-btns-two">
+					<div class="box-btns-two" th:if="${ item.secKillSkuInfoVo == null || (#dates.createNow().getTime() < item.secKillSkuInfoVo.startTime && #dates.createNow().getTime() > item.secKillSkuInfoVo.endTime)}">
 						<a th:attr="skuId=${item.info.skuId}" class="addToCart" href="#" id="addToCartA">
 							加入购物车
 						</a>
 					</div>
 
-				<!--	<div class="box-btns-two">
+					<div class="box-btns-two" th:if="${item.secKillSkuInfoVo != null && (#dates.createNow().getTime() >= item.secKillSkuInfoVo.startTime && #dates.createNow().getTime() <= item.secKillSkuInfoVo.endTime)}">
 						<a class="seckill" href="#"
-						   th:attr="skuId=${item.info.skuId}">
+						   th:attr="skuId=${item.secKillSkuInfoVo.skuId}, sessionId=${item.secKillSkuInfoVo.promotionSessionId}, randomCode=${item.secKillSkuInfoVo.randomCode}">
 							立即抢购
 						</a>
-					</div>-->
+					</div>
 
 					<div class="box-btns-three">
 						<img src="/static/item/img/e4ed3606843f664591ff1f68f7fda12d.png" alt=""/> 分享
@@ -1391,12 +1391,12 @@
 
 
 	$(".seckill").click(function () {
-		var isLogin = [[${session.loginUser != null}]];     //true
+		const isLogin = [[${session.loginUser != null}]];     //true
 		if (isLogin) {
 			var killId = $(this).attr("sessionid") + "-" + $(this).attr("skuid");
-			var code = $(this).attr("code");
-			var num = $("#productNum").val();
-			location.href = "http://seckill.gulimall.com/kill?killId=" + killId + "&key=" + code + "&num=" + num;
+			const code = $(this).attr("randomcode");
+			const num = $("#productNum").val();
+			location.href = "http://seckill.guli-mall.com/kill?killId=" + killId + "&key=" + code + "&num=" + num;
 		} else {
 			alert("秒杀请先登录");
 		}

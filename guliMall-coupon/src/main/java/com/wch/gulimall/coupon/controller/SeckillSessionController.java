@@ -62,10 +62,8 @@ public class SeckillSessionController {
      * 保存
      */
     @RequestMapping("/save")
-    //@RequiresPermissions("coupon:seckillsession:save")
     public R save(@RequestBody SeckillSessionEntity seckillSession){
 		seckillSessionService.save(seckillSession);
-
         return R.ok();
     }
 

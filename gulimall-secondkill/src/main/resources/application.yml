@@ -34,6 +34,10 @@ spring:
       pool:
         core-size: 20
         max-size: 50
+  session:
+    store-type: redis
+
+
 server:
   port: 25000
 

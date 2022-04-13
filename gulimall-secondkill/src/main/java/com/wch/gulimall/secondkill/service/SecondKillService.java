@@ -17,4 +17,6 @@ public interface SecondKillService {
     List<SecondKillRedisEntityTo> queryCurrentSecondKillSkus();
 
     SecondKillRedisEntityTo querySecKillSkuInfo(Long skuId);
+
+    String secondKill(String killId, String key, Integer num);
 }

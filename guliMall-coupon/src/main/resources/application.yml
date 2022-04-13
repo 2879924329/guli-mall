@@ -20,5 +20,8 @@ mybatis-plus:
     db-config:
       #调整主键自增
       id-type: auto
+      #配置全局的逻辑删除规则（1 删除， 0 没有删除）
+      logic-delete-value: 1
+      logic-not-delete-value: 0
 server:
   port: 7000

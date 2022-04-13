@@ -41,7 +41,10 @@ public class SecondKillScheduled {
         try {
             secondKillService.upSecondKill();
         }finally {
-            lock.unlock();
+            //避免异常：java.lang.IllegalMonitorStateException: attempt to unlock lock, not locked by current thread by node id: 522ba490-fc9f-4df7-855f-31a045cf5e1d thread-id: 1051
+            if (lock.isLocked() && lock.isHeldByCurrentThread()) {
+                lock.unlock();
+            }
         }
     }
 }

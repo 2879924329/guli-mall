@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Configuration;
 import java.io.IOException;
 import java.util.HashMap;
 
+import static com.wch.common.constant.mq.OrderMQConstant.*;
+
 /**
  * @author wch
  * @version 1.0
@@ -23,6 +25,7 @@ public class MyMQConfig {
     /**
      * 容器中的binding，queue，exchange都会自动创建，
      * 一但创建队列以后，即使属性发生变化，也不会覆盖原队列
+     *
      * @return
      */
     @Bean
@@ -62,14 +65,24 @@ public class MyMQConfig {
 
     /**
      * 订单释放直接和库存释放绑定
+     *
      * @return
      */
-   @Bean
-    public Binding orderReleaseOther(){
-       return new Binding(StockMQConstant.STOCK_RELEASE_STOCK_QUEUE, Binding.DestinationType.QUEUE,
-               OrderMQConstant.ORDER_EVENT_EXCHANGE,
-               OrderMQConstant.ORDER_RELEASE_OTHER_ROUTE_KEY, null);
-   }
+    @Bean
+    public Binding orderReleaseOther() {
+        return new Binding(StockMQConstant.STOCK_RELEASE_STOCK_QUEUE, Binding.DestinationType.QUEUE,
+                ORDER_EVENT_EXCHANGE,
+                OrderMQConstant.ORDER_RELEASE_OTHER_ROUTE_KEY, null);
+    }
 
+    @Bean
+    public Queue secondKillOrderQueue() {
+        return new Queue(ORDER_SECKILL_ORDER_QUEUE, true, false, false);
+    }
 
+    @Bean
+    public Binding secondKillOrderBinding(){
+        return new Binding(ORDER_SECKILL_ORDER_QUEUE, Binding.DestinationType.QUEUE,
+               ORDER_EVENT_EXCHANGE, ORDER_SECOND_KILL_ROUTE_KEY, null);
+    }
 }

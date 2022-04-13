@@ -1,6 +1,7 @@
 package com.wch.gulimall.order.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.wch.common.to.mq.SecondKillOrderTo;
 import com.wch.common.utils.PageUtils;
 import com.wch.gulimall.order.entity.OrderEntity;
 import com.wch.gulimall.order.vo.*;
@@ -33,5 +34,7 @@ public interface OrderService extends IService<OrderEntity> {
     PageUtils queryOrderListPage(Map<String, Object> params);
 
     String handlePayResult(PayAsyncVo payAsyncVo, HttpServletRequest request);
+
+    void createSecondKillOrder(SecondKillOrderTo order);
 }
 

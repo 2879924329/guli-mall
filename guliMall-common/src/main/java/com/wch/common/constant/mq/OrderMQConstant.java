@@ -8,7 +8,9 @@ package com.wch.common.constant.mq;
 public class OrderMQConstant {
     public static final String ORDER_RELEASE_ORDER_QUEUE = "order.release.order.queue";
     public static final String ORDER_EVENT_EXCHANGE = "order-event-exchange";
-
+    public static final String ORDER_SECKILL_ORDER_QUEUE = "order.seckill.order.queue";
     public static final String ORDER_CREATE_ORDER_ROUTE_KRY = "order.create.order";
     public static final String ORDER_RELEASE_OTHER_ROUTE_KEY = "order.release.other.#";
+    public static final String ORDER_SECOND_KILL_ROUTE_KEY = "order.seckill.order";
+
 }

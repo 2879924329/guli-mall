@@ -10,6 +10,7 @@ import com.wch.common.constant.mq.OrderMQConstant;
 import com.wch.common.enume.TradeStatus;
 import com.wch.common.to.MemberEntityTo;
 import com.wch.common.to.mq.OrderEntityTo;
+import com.wch.common.to.mq.SecondKillOrderTo;
 import com.wch.common.utils.PageUtils;
 import com.wch.common.utils.Query;
 import com.wch.common.utils.R;
@@ -341,6 +342,30 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             this.updateOrderStatus(outTradeNo, OrderStatusEnum.PAYED.getCode());
         }
         return "success";
+    }
+
+    /**
+     * 创建秒杀单
+     * @param order
+     */
+    @Override
+    public void createSecondKillOrder(SecondKillOrderTo order) {
+        //保存订单
+        OrderEntity orderEntity = new OrderEntity();
+        orderEntity.setOrderSn(order.getOrderSn());
+        orderEntity.setMemberId(order.getMemberId());
+        orderEntity.setStatus(OrderStatusEnum.CREATE_NEW.getCode());
+        BigDecimal payAmount = order.getSeckillPrice().multiply(new BigDecimal("" + order.getNum()));
+        orderEntity.setTotalAmount(payAmount);
+        orderEntity.setPayAmount(payAmount);
+        this.save(orderEntity);
+        //保存订单项信息
+        OrderItemEntity orderItemEntity = new OrderItemEntity();
+        orderItemEntity.setOrderSn(order.getOrderSn());
+        orderItemEntity.setRealAmount(payAmount);
+        orderItemEntity.setSkuQuantity(order.getNum());
+      //TODO 获取当前sku的详细信息  productFeignService.getSpuInfo()
+        orderItemService.save(orderItemEntity);
     }
 
     private void updateOrderStatus(String outTradeNo, Integer code) {
