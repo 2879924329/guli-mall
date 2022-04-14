@@ -20,6 +20,16 @@
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
+            <version>2021.1</version>
+        </dependency>
         <!--新版gateway需要引入gateway和webflux-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

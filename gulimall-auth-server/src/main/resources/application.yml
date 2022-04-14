@@ -5,6 +5,11 @@ spring:
     nacos:
       discovery:
         server-addr: 101.200.200.220:8848
+    sentinel:
+      transport:
+        dashboard: localhost:8333
+        port: 8719
+
   redis:
     host: 192.168.84.88
     port: 6379
@@ -23,3 +28,8 @@ gitee:
     client-id: 4fc163cb0798930d9bb30243f3acd158c623b2493a1448c2250b7d6aaa41d0ef
     client-secret: bec0057ce73571d718185f44bc530ba1367a4fab9f92ece152bbec86485f6d5c
     redirect-url: http://auth.guli-mall.com/oauth2/success
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

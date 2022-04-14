@@ -4,6 +4,11 @@ spring:
       discovery:
         server-addr: 101.200.200.220:8848
         #server-addr: 192.168.84.88:8848
+    sentinel:
+      transport:
+        dashboard: localhost:8333
+        port: 8719
+
   datasource:
     username: root
     password: 123456
@@ -32,7 +37,6 @@ spring:
 
 
 
-
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
   global-config:
@@ -47,4 +51,12 @@ server:
 
 logging:
   level:
-    com.wch.gulimall: error
+    com.wch.gulimall: info
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+feign:
+  sentinel:
+    enabled: true

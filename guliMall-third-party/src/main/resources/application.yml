@@ -4,6 +4,11 @@ spring:
       discovery:
         server-addr: 101.200.200.220:8848
         #server-addr: 192.168.84.88:8848
+    sentinel:
+      transport:
+        dashboard: localhost:8333
+        port: 8719
+
   application:
     name: gulimall-third-party
     #阿里云短短信验证码
@@ -20,3 +25,8 @@ server:
 ribbon:
   ReadTimeout: 30000
   ConnectTimeout: 30000
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

@@ -13,7 +13,15 @@ spring:
       discovery:
         #server-addr: 192.168.84.88:8848 #Nacos服务注册中心地址
         server-addr: 101.200.200.220:8848 #Nacos服务注册中心地址
-
+    sentinel:
+      transport:
+        dashboard: localhost:8333
+        port: 8719
+management:
+      endpoints:
+        web:
+          exposure:
+            include: '*'
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
   global-config:

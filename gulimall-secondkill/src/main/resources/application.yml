@@ -25,7 +25,11 @@ spring:
     nacos:
       discovery:
         server-addr: 101.200.200.220:8848
-#  task:
+    sentinel:
+      transport:
+        dashboard: localhost:8333
+        port: 8719
+  #  task:
 #    scheduling:
 #      pool:
 #        size: 5
@@ -46,3 +50,8 @@ server:
 ribbon:
   ReadTimeout: 30000
   ConnectTimeout: 30000
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

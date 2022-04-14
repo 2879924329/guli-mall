@@ -1,5 +1,9 @@
 package com.wch.gulimall.secondkill.service.impl;
 
+import com.alibaba.csp.sentinel.Entry;
+import com.alibaba.csp.sentinel.SphU;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
@@ -68,7 +72,7 @@ public class SecondKillServiceImpl implements SecondKillService {
     public void upSecondKill() {
         //1,去数据库扫描最近三天需要参与秒杀的活动
         R r = couponFeignService.getLastSessions();
-        if (r.getCode() == 0){
+        if (r.getCode() == 0) {
             List<SecondSessionEntityTo> data = r.getData(new TypeReference<List<SecondSessionEntityTo>>() {
             });
             //缓存到redis
@@ -82,29 +86,32 @@ public class SecondKillServiceImpl implements SecondKillService {
 
     /**
      * 获取当前可以参与秒杀的商品信息
+     *
      * @return
      */
+    @SentinelResource(value = "queryCurrentSecondKillSkusResource", blockHandler = "blockHandler")
     @Override
     public List<SecondKillRedisEntityTo> queryCurrentSecondKillSkus() {
         //1，确定当前时间属于哪个秒杀场次
         long time = new Date().getTime();
+        /*  try(Entry entry = SphU.entry("queryCurrentSecondKillSkus")) {*/
         //查到所有的keys
         Set<String> keys = stringRedisTemplate.keys(SECKILL_SESSIONS_PREFIX + "*");
-        if (!CollectionUtils.isEmpty(keys)){
+        if (!CollectionUtils.isEmpty(keys)) {
             for (String key : keys) {
                 //key seckill:sessions:1649606400000_1649692800000
                 String replace = key.replace(SECKILL_SESSIONS_PREFIX, "");
                 String[] s = replace.split("_");
                 long startTime = Long.parseLong(s[0]);
                 long endTime = Long.parseLong(s[1]);
-                if (time >= startTime && time <= endTime){
+                if (time >= startTime && time <= endTime) {
                     //2，获取这个秒杀场次的所有商品信息
                     List<String> list = stringRedisTemplate.opsForList().range(key, -100, 100);
-                    if (!CollectionUtils.isEmpty(list)){
+                    if (!CollectionUtils.isEmpty(list)) {
                         BoundHashOperations<String, String, String> hashOps = stringRedisTemplate.boundHashOps(SKU_KILL_CACHE_PREFIX);
-                        if (!CollectionUtils.isEmpty(list)){
+                        if (!CollectionUtils.isEmpty(list)) {
                             List<String> multiGet = hashOps.multiGet(list);
-                            if (!CollectionUtils.isEmpty(multiGet)){
+                            if (!CollectionUtils.isEmpty(multiGet)) {
                                 return multiGet.stream().map(item -> {
                                     //当前秒杀开始了，需要随机码
                                     return JSON.parseObject(item, SecondKillRedisEntityTo.class);
@@ -115,10 +122,18 @@ public class SecondKillServiceImpl implements SecondKillService {
                 }
             }
         }
+       /* }catch (BlockException e){
+            log.error("资源被限流啦！");
+        }*/
+
+
         return Collections.emptyList();
     }
 
-
+    public List<SecondKillRedisEntityTo> blockHandler(BlockException e) {
+        log.warn("资源被限流啦！！！！！！！！！");
+        return Collections.emptyList();
+    }
 
     @Override
     public SecondKillRedisEntityTo querySecKillSkuInfo(Long skuId) {
@@ -163,9 +178,10 @@ public class SecondKillServiceImpl implements SecondKillService {
 
     /**
      * 商品秒杀
+     *
      * @param killId killId
-     * @param key key
-     * @param num num
+     * @param key    key
+     * @param num    num
      * @return 订单号
      */
     //TODO 上架秒杀商品的时候，每一个数据都有过期信息,同时还需要计算运费等！
@@ -178,33 +194,33 @@ public class SecondKillServiceImpl implements SecondKillService {
         String s = hashOps.get(killId);
         if (ObjectUtils.isEmpty(s)) {
             return null;
-        }else {
+        } else {
             SecondKillRedisEntityTo secondKillRedisEntityTo = JSON.parseObject(s, SecondKillRedisEntityTo.class);
-           //校验合法性
+            //校验合法性
             Long startTime = secondKillRedisEntityTo.getStartTime();
             Long endTime = secondKillRedisEntityTo.getEndTime();
             long currentTime = new Date().getTime();
             //校验时间的合法性
-            if (startTime <= currentTime && currentTime <= endTime){
+            if (startTime <= currentTime && currentTime <= endTime) {
                 //校验随机码
                 String randomCode = secondKillRedisEntityTo.getRandomCode();
                 String id = secondKillRedisEntityTo.getPromotionSessionId() + "-" + secondKillRedisEntityTo.getSkuId();
-                if (randomCode.equals(key) && killId.equals(id)){
+                if (randomCode.equals(key) && killId.equals(id)) {
                     //验证购物数量是否合理
                     Integer seckillLimit = secondKillRedisEntityTo.getSeckillLimit();
-                    if (num <= seckillLimit){
-                     //验证是否购买过  幂等性处理,秒杀成功，就去redis占位 key=userId:sessionId:skuId
-                      String redisKey = userId + "-" + id;
-                      //超时时间，秒杀活动的结束时间 - 秒杀活动的开始时间
+                    if (num <= seckillLimit) {
+                        //验证是否购买过  幂等性处理,秒杀成功，就去redis占位 key=userId:sessionId:skuId
+                        String redisKey = userId + "-" + id;
+                        //超时时间，秒杀活动的结束时间 - 秒杀活动的开始时间
                         long ttl = endTime - startTime;
                         Boolean absent = stringRedisTemplate.opsForValue().setIfAbsent(redisKey, num.toString(), ttl, TimeUnit.MILLISECONDS);
-                        if (Boolean.TRUE.equals(absent)){
+                        if (Boolean.TRUE.equals(absent)) {
                             //占位成功，木有买过
                             RSemaphore semaphore = redissonClient.getSemaphore(SKU_STOCK_SEMAPHORE + randomCode);
                             try {
                                 //尝试时间
                                 boolean tryAcquire = semaphore.tryAcquire(num, 100, TimeUnit.MILLISECONDS);
-                                if (Boolean.TRUE.equals(tryAcquire)){
+                                if (Boolean.TRUE.equals(tryAcquire)) {
                                     //秒杀成功，快速下单,给mq发送消息
                                     //随机订单号
                                     String orderSn = IdWorker.getTimeId();
@@ -221,15 +237,15 @@ public class SecondKillServiceImpl implements SecondKillService {
                             } catch (InterruptedException e) {
                                 return null;
                             }
-                        }else {
+                        } else {
                             //买过了，
                             return null;
                         }
                     }
-                }else {
+                } else {
                     return null;
                 }
-            }else {
+            } else {
                 return null;
             }
         }
@@ -240,29 +256,30 @@ public class SecondKillServiceImpl implements SecondKillService {
 
     /**
      * 保存当前活动信息
+     *
      * @param secondSessionEntityTo
      */
-    private void saveSessionTo(List<SecondSessionEntityTo> secondSessionEntityTo){
+    private void saveSessionTo(List<SecondSessionEntityTo> secondSessionEntityTo) {
         secondSessionEntityTo.forEach(secondSessionEntityTo1 -> {
             long startTime = secondSessionEntityTo1.getStartTime().getTime();
             long endTime = secondSessionEntityTo1.getEndTime().getTime();
             String key = SECKILL_SESSIONS_PREFIX + startTime + "_" + endTime;
             //判断是否已经上架
             Boolean hasKey = stringRedisTemplate.hasKey(key);
-            if (Boolean.FALSE.equals(hasKey)){
+            if (Boolean.FALSE.equals(hasKey)) {
                 List<SecondKillRelationEntityTo> relationEntities = secondSessionEntityTo1.getRelationEntities();
-                if (!CollectionUtils.isEmpty(relationEntities)){
+                if (!CollectionUtils.isEmpty(relationEntities)) {
                     List<String> collect = relationEntities.stream().map(item -> item.getPromotionSessionId().toString() + "-" + item.getSkuId().toString()).collect(Collectors.toList());
                     //key :场次id+商品skuId
                     stringRedisTemplate.opsForList().leftPushAll(key, collect);
-                }else {
+                } else {
                     log.warn("暂时还未关联商品！");
                 }
             }
         });
     }
 
-    private void saveSessionInfo(List<SecondSessionEntityTo> secondSessionEntityTo){
+    private void saveSessionInfo(List<SecondSessionEntityTo> secondSessionEntityTo) {
         secondSessionEntityTo.forEach(secondSessionEntityTo1 -> {
             BoundHashOperations<String, Object, Object> stringObjectObjectBoundHashOperations = stringRedisTemplate.boundHashOps(SKU_KILL_CACHE_PREFIX);
             secondSessionEntityTo1.getRelationEntities().forEach(secondKillRelationEntityTo -> {
@@ -270,11 +287,11 @@ public class SecondKillServiceImpl implements SecondKillService {
                 String token = UUID.randomUUID().toString().replace("-", "");
                 //key :场次id+商品skuId
                 String key = secondKillRelationEntityTo.getPromotionSessionId().toString() + "-" + secondKillRelationEntityTo.getSkuId().toString();
-                if (Boolean.FALSE.equals(stringObjectObjectBoundHashOperations.hasKey(key))){
+                if (Boolean.FALSE.equals(stringObjectObjectBoundHashOperations.hasKey(key))) {
                     SecondKillRedisEntityTo secondKillRedisEntityTo = new SecondKillRedisEntityTo();
                     //sku的基本数据
                     R r = productFeignService.getSkuInfo(secondKillRelationEntityTo.getSkuId());
-                    if (r.getCode() == 0){
+                    if (r.getCode() == 0) {
                         SkuInfoTo skuInfo = r.getData("skuInfo", new TypeReference<SkuInfoTo>() {
                         });
                         secondKillRedisEntityTo.setSkuInfoTo(skuInfo);

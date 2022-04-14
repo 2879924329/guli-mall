@@ -29,6 +29,11 @@ spring:
     nacos:
       discovery:
         server-addr: 101.200.200.220:8848
+    sentinel:
+      transport:
+        dashboard: localhost:8333
+        port: 8719
+
   application:
     name: gulimall-order
   session:
@@ -65,3 +70,8 @@ ribbon:
   ReadTimeout: 30000
   ConnectTimeout: 30000
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
