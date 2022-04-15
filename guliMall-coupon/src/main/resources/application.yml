@@ -8,6 +8,14 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
     name: gulimall-coupon
+  sleuth:
+    sampler:
+      probability: 1
+  zipkin:
+      base-url: http://192.168.84.88:9411/
+      discovery-client-enabled: false
+      sender:
+        type: web
   cloud:
     nacos:
       discovery:
@@ -33,3 +41,7 @@ mybatis-plus:
       logic-not-delete-value: 0
 server:
   port: 7000
+logging:
+  level:
+    org.springframework.cloud.openfeign: debug
+    org.springframework.cloud.sleuth: debug

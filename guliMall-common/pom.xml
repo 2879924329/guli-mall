@@ -24,11 +24,12 @@
         <fastjson.version>1.2.74</fastjson.version>
         <velocity.version>1.7</velocity.version>
         <pagehelper.spring.boot.version>1.2.5</pagehelper.spring.boot.version>
-        <mysql.version>8.0.18</mysql.version>
+        <mysql.version>8.0.28</mysql.version>
         <servlet.version>4.0.1</servlet.version>
         <javax.validation.version>2.0.1.Final</javax.validation.version>
         <hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
         <springcloud.alibaba.version>2.2.2.RELEASE</springcloud.alibaba.version>
+        <spring-cloud.version>Hoxton.SR8</spring-cloud.version>
     </properties>
 
     <dependencies>
@@ -76,17 +77,8 @@
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
-        <!--seata-->
-    <!--    <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>fastjson</artifactId>
-                    <groupId>com.alibaba</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>-->
+
+
         <!--mysql-connector-->
         <dependency>
             <groupId>mysql</groupId>

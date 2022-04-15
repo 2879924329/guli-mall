@@ -3,7 +3,7 @@ package com.wch.gulimall.product.web;
 import com.wch.gulimall.product.entity.CategoryEntity;
 import com.wch.gulimall.product.service.CategoryService;
 import com.wch.gulimall.product.vo.web.Catelog2Vo;
-import io.lettuce.core.RedisClient;
+
 import org.redisson.api.RLock;
 import org.redisson.api.RReadWriteLock;
 import org.redisson.api.RedissonClient;

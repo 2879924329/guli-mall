@@ -33,7 +33,14 @@ spring:
     listener:
       simple:
         acknowledge-mode: manual
-
+  sleuth:
+    sampler:
+      probability: 1
+  zipkin:
+      base-url: http://192.168.84.88:9411/
+      discovery-client-enabled: false
+      sender:
+        type: web
 mybatis-plus:
   mapperLocations: classpath:mapper/**/*.xml
   global-config:
@@ -46,6 +53,8 @@ mybatis-plus:
 logging:
   level:
     com.wch.gulimall.warehouse: debug
+    org.springframework.cloud.openfeign: debug
+    org.springframework.cloud.sleuth: debug
     #ribbon的超时时间
 ribbon:
   ReadTimeout: 30000

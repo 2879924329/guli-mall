@@ -1,6 +1,11 @@
 spring:
   application:
     name: gulimall-seckill
+  zipkin:
+    base-url: http://192.168.84.88:9411/
+    discovery-client-enabled: false
+    sender:
+      type: web
   thymeleaf:
     cache: false
   rabbitmq:
@@ -40,11 +45,13 @@ spring:
         max-size: 50
   session:
     store-type: redis
+  sleuth:
+    sampler:
+      probability: 1
 
 
 server:
   port: 25000
-
 
 #ribbon的超时时间
 ribbon:
@@ -55,3 +62,7 @@ management:
     web:
       exposure:
         include: '*'
+logging:
+  level:
+    org.springframework.cloud.openfeign: debug
+    org.springframework.cloud.sleuth: debug

@@ -33,7 +33,14 @@ spring:
       transport:
         dashboard: localhost:8333
         port: 8719
-
+  sleuth:
+    sampler:
+      probability: 1
+  zipkin:
+      base-url: http://192.168.84.88:9411/
+      discovery-client-enabled: false
+      sender:
+        type: web
   application:
     name: gulimall-order
   session:
@@ -75,3 +82,7 @@ management:
     web:
       exposure:
         include: '*'
+logging:
+  level:
+    org.springframework.cloud.openfeign: debug
+    org.springframework.cloud.sleuth: debug

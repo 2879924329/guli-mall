@@ -18,7 +18,14 @@ spring:
       path: /sms/
       template-id: M72CB42894
       host: https://jumsendsms.market.alicloudapi.com
-
+  sleuth:
+    sampler:
+      probability: 1
+  zipkin:
+      base-url: http://192.168.84.88:9411/
+      discovery-client-enabled: false
+      sender:
+        type: web
 server:
   port: 30000
 #ribbon的超时时间
@@ -30,3 +37,7 @@ management:
     web:
       exposure:
         include: '*'
+logging:
+  level:
+    org.springframework.cloud.openfeign: debug
+    org.springframework.cloud.sleuth: debug

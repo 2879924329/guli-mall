@@ -57,6 +57,10 @@
             <!--optional设置为true，才是真的使用热部署-->
             <optional>true</optional>
         </dependency>
+        <!--链路追踪-->
+        <dependency> <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-zipkin</artifactId>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
